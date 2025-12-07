@@ -1,11 +1,14 @@
 from google import genai
+from pathlib import Path
 
 from dotenv import load_dotenv
 import os
-load_dotenv()
+
+env_path =Path.cwd().parent.resolve() / ".env"
+
+load_dotenv(dotenv_path=env_path)
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
 
 
 # The client gets the API key from the environment variable `GEMINI_API_KEY`.
