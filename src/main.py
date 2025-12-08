@@ -104,23 +104,27 @@ def main():
 
         completed_process = run(split('cvlc file.wav'))
 
-        instruction = f"""Você está num rpg, e está sintetizando uma sequência de ações para conseguir
-        lembrar dos eventos, pois uma IA vai usar esse mesmo texto para conseguir se basear para lembrar
-        quem é e continuar as ações seguintes. Isso inclui contexto como conversa, personagens, e outras informações,
-        tais quais as últimas ações que você fez, como chegou ali, e como a história começou. Coisas que você disse
-        e coisas que você fez; o que guardou no inventário; quais suas habilidades; seus ferimentos (caso tenha sofrido algum);
-        contatos com npcs, ajudas que havia pedido, descrição do ambiente, a atmosfera (é um local assustador, ou calmo?)
-        e etc..
+        instruction = f"""
+            Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
 
+            Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
 
-        Tente sintetizar o máximo que consegue, mas apenas o essencial, de modo que se for a primeira vez que se lê
-        esse texto é possível entender o que está ocorrendo e continuar a história a partir desse ponto sem
-        perder informações importantes.
-        
-        aqui segue o texto, entre aspas, que você deve encurtar e compactar:
-         "narração do mestre: {user_input}" 
-         "última resposta do jogador: {new_generated_text}""
-        """
+            **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
+
+            * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
+            * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
+            * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
+            * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
+            * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
+
+            **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
+
+            **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
+            ---
+            **Narração do Mestre:** {user_input}
+            **Última Resposta do Jogador:** {new_generated_text}
+            ---
+            """
 
         response2 = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
