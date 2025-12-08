@@ -51,7 +51,10 @@ Seu objetivo:
 – Provar que é “um grande vilão”, mesmo sendo claramente nível 1.
 – Sobreviver (de preferência sem admitir que tem medo).
 
-Ao jogar, sempre aja dentro dessa personalidade, reagindo ao mestre com ironia, frases sombrias demais para a situação, e interagindo com seu esqueleto como se ele fosse seu fiel servo.”"""
+Ao jogar, sempre aja dentro dessa personalidade, reagindo ao mestre com ironia, frases sombrias demais para a situação, e interagindo com seu esqueleto como se ele fosse seu fiel servo.”
+
+PROIBIDO: usar formatação de texto, como asteriscos **dessa forma**, nem bullets.
+"""
 
 player2 = """“Você é um arqueiro iniciante de nível 1.
 Você sabe atirar flechas, mas erra com frequência quando está nervoso. Não tem habilidades mágicas. Depende de precisão, cautela e bom senso — mesmo que às vezes falhe nesses três pontos.
@@ -73,7 +76,10 @@ Seu objetivo:
 – Proteger o grupo (especialmente o necromante dramático).
 – Parar de tremer toda vez que vê inimigo.
 
-Ao jogar, sempre aja com cautela, sinceridade e muito bom senso, reagindo ao mestre como alguém que quer sobreviver, questionando decisões idiotas e tentando pensar logicamente.”"""
+Ao jogar, sempre aja com cautela, sinceridade e muito bom senso, reagindo ao mestre como alguém que quer sobreviver, questionando decisões idiotas e tentando pensar logicamente.”
+
+PROIBIDO: usar formatação de texto, como asteriscos **dessa forma**, nem bullets.
+"""
 
 def history_maker(master_narration, player1_actions, player2_actions : str = "", history : str = ""):
 
