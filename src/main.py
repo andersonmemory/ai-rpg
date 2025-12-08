@@ -109,6 +109,7 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
 
     return saving_message
 
+
 async def main():
 
     if not os.path.exists(history_path):
@@ -131,8 +132,9 @@ async def main():
                 print(line)
                 history += f.readline()
 
-
-        player1_prompt = f"""{player1} {history}"""
+        player1_prompt = f"""{player1} 
+        Descrição dos eventos ocorridos:
+        {history}"""
 
         player1_response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
@@ -145,48 +147,52 @@ async def main():
         await player_speak(1, player1_text)
 
         # TODO: fill here
-        instruction_history = history_maker(user_input, player1_text, new_generated_text_2)
+        instruction_history = history_maker(user_input, player1_text) 
 
-        response2 = gemma_client.models.generate_content(
+        history_saver_one_response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
             contents=instruction_history,
         )
 
-        history_part_one = response2.text
+        history_saver_one_text = history_saver_one_response.text
 
         with open("history.txt", 'a') as f:
-            f.write(f"\n{history_part_one}")
+            f.write(f"\n{history_saver_one_text}")
 
-        response = gemma_client.models.generate_content(
+        player2_prompt = f"""{player2} 
+        Descrição dos eventos ocorridos:
+        {history_saver_one_text}"""
+
+        player2_response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
-            contents=prompt,
+            contents=player2_prompt + "É sua vez de agir agora, o turno é seu.",
         )
 
         history = ""
-
+        # TODO: is this necessary since we have line 152?
         with open("history.txt", 'r') as f:
              for line in f:
                   history += f.readline()
 
-        new_generated_text_2 = response.text
+        player2_text = player2_response.text
 
         # TODO: AI player 2 
-        await player_speak(2, new_generated_text_2)
+        await player_speak(2, player2_text)
 
-        instruction = history_maker(user_input, new_generated_text, new_generated_text_2, history=history)
+        instruction = history_maker(user_input, player1_text, player2_text, history=history)
 
-        response2 = gemma_client.models.generate_content(
+        final_definitive_history_file_response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
             contents=instruction,
         )
 
-        result = response2.text
-        print(result)
+        final_definitive_history_file_text = final_definitive_history_file_response
+        print(final_definitive_history_file_text)
 
         os.remove("history.txt")
 
         with open("history.txt", 'w') as f:
-            f.write(f"\n{result}")
+            f.write(f"\n{final_definitive_history_file_text}")
 
 
 async def player_speak(player : int, message : str):
