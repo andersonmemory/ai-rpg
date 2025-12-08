@@ -31,37 +31,83 @@ gemma_client = genai.Client(api_key=GEMMA_API_KEY)
 murf_client = Murf(api_key=MURF_API_KEY)
 
 
-player1 = """"""
+player1 = """“Você é um necromante iniciante de nível 1.
+Você só consegue invocar um único esqueleto fraco, que é desajeitado e pode cair no chão com facilidade. Seus poderes são instáveis e você ainda está aprendendo necromancia — muitos feitiços falham, ficam fracos ou saem tortos.
 
-player2 = """"""
+Sua personalidade:
+– Sarcástico e dramático, sempre tentando parecer mais sombrio do que realmente é.
+– Finge ser do mal, mas no fundo é mais inseguro do que maligno.
+– Gosta de dar nomes esquisitos ao seu esqueleto.
+– Reclama de absolutamente tudo.
+– Tem medo de monstros maiores que ele, mas nunca admite.
 
+Seu estilo de fala:
+– Usa frases teatrais e exageradas como se estivesse num ritual eterno.
+– Solta comentários cínicos e “ameaças” fracas.
+– Faz pose de vilão, mesmo quando falha feio.
 
-saving_message = f"""
-            Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
+Seu objetivo:
+– Evoluir na necromancia.
+– Provar que é “um grande vilão”, mesmo sendo claramente nível 1.
+– Sobreviver (de preferência sem admitir que tem medo).
 
-            Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
+Ao jogar, sempre aja dentro dessa personalidade, reagindo ao mestre com ironia, frases sombrias demais para a situação, e interagindo com seu esqueleto como se ele fosse seu fiel servo.”"""
 
-            **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
+player2 = """“Você é um arqueiro iniciante de nível 1.
+Você sabe atirar flechas, mas erra com frequência quando está nervoso. Não tem habilidades mágicas. Depende de precisão, cautela e bom senso — mesmo que às vezes falhe nesses três pontos.
 
-            * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
-            * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
-            * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
-            * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
-            * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
+Sua personalidade:
+– Gentil, pé no chão, mais otimista que o necromante.
+– Ansioso e sempre achando que algo pode dar errado.
+– Vive tentando evitar que o necromante faça burrada.
+– Sincero demais, do tipo que fala a verdade na lata.
+– Ele é a “voz da razão”, mesmo sendo só nível 1.
 
-            **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
+Seu estilo de fala:
+– Direto, simples, às vezes com comentários tipo “mano…”
+– Questiona decisões estranhas.
+– Tenta manter todos vivos com pragmatismo.
 
-            **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
-            ---
-            **Narração do Mestre:** {user_input}
-            **Última Resposta do Jogador 1:** {new_generated_text}
-            **Última Resposta do Jogador 2 (no turno anterior):** {new_generated_text}
+Seu objetivo:
+– Aprender a ser um arqueiro de verdade.
+– Proteger o grupo (especialmente o necromante dramático).
+– Parar de tremer toda vez que vê inimigo.
 
-            o turno do jogador 1 acabou e agora é o turno do jogador 2.
+Ao jogar, sempre aja com cautela, sinceridade e muito bom senso, reagindo ao mestre como alguém que quer sobreviver, questionando decisões idiotas e tentando pensar logicamente.”"""
 
-            ---
-            """
+def history_maker(master_narration, player1_actions, player2_actions : str = "", history : str = ""):
 
+    saving_message = f"""
+                Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
+
+                Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
+
+                **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
+
+                * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
+                * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
+                * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
+                * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
+                * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
+
+                **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
+
+                **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
+                ---
+                **Narração do Mestre:** {master_narration}
+                **Última Resposta do Jogador 1:** {player1_actions}
+
+                """
+
+    if player2_actions:
+        saving_message += """**Última Resposta do Jogador 2:** {player2_actions}
+        ---"""
+
+    if history:
+        saving_message += f"""**O RESTO DO ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR 
+        (MODIFIQUE E ADAPTE COM AS NOVAS INFORMAÇÕES)**{history}"""
+
+    return saving_message
 
 async def main():
 
@@ -75,7 +121,7 @@ async def main():
     while True:
 
         # master's turn
-        user_input = input("Diga o que ocorre:")
+        user_input = input("Diga o que ocorre: ")
 
         # DONE: check if there is an history.txt file
         history = "" 
@@ -86,104 +132,48 @@ async def main():
                 history += f.readline()
 
 
-        prompt = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. 
-        Você é o jogador 1 (um), e vai identificar quem é você ou quando você que interagiu com base no contexto,
-        o mesmo vale para identificar seu colega.
-        Um mestre está narrando
-        e você só reage aos eventos""" + user_input + """
-        """ + """(seja curto, mas nem tanto e lembre-se que é uma fala de um personagem em tom coloquial, 
-        mas não faça de propósito nem coloque jargões ou repetições, entre no personagem e reaja de uma forma
-        como ele realmente iria se sentir nessa situação, tente não falar de si em terceira pessoa ou repetir
-        informações que o mestre diz, fale como se nem estivesse ouvindo o mestre e sim reagindo e que 
-        tudo o que está sendo descrito são na verdade o que está ocorrendo e como você reage a isso)
+        player1_prompt = f"""{player1} {history}"""
 
-        aqui está a sequência de eventos do que você ou outros realizaram até então e prossiga a partir
-        disso (se não tiver nada aqui apenas faça o que foi pedido):
-        {history}
-        """
-
-        response = gemma_client.models.generate_content(
+        player1_response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
-            contents=prompt,
+            contents=player1_prompt,
         )
 
-        new_generated_text = response.text
+        player1_text = player1_response.text
 
         # Done: put player speak here
-        await player_speak(1, new_generated_text)
+        await player_speak(1, player1_text)
 
         # TODO: fill here
-        # instruction = 
+        instruction_history = history_maker(user_input, player1_text, new_generated_text_2)
 
         response2 = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
-            contents=instruction,
+            contents=instruction_history,
         )
 
-        result = response2.text
+        history_part_one = response2.text
 
         with open("history.txt", 'a') as f:
-            f.write(f"\n{result}")
-
-        prompt2 = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. 
-        Você é o jogador 2 (dois), e vai identificar quem é você ou quando você que interagiu com base no contexto,
-        o mesmo vale para identificar seu colega.
-
-        Seu colega já fez a primeira ação, por isso você presume que deve ser o outro que ainda não realizou a ação,
-        além de usar o próprio histórico com base nisso para tirar essa conclusão.
-
-        Um mestre está narrando
-        e você só reage aos eventos""" + user_input + """
-        """ + """(seja curto, mas nem tanto e lembre-se que é uma fala de um personagem em tom coloquial, 
-        mas não faça de propósito nem coloque jargões ou repetições, entre no personagem e reaja de uma forma
-        como ele realmente iria se sentir nessa situação, tente não falar de si em terceira pessoa ou repetir
-        informações que o mestre diz, fale como se nem estivesse ouvindo o mestre e sim reagindo e que 
-        tudo o que está sendo descrito são na verdade o que está ocorrendo e como você reage a isso)
-
-        aqui está a sequência de eventos do que você ou outros realizaram até então e prossiga a partir
-        disso (se não tiver nada aqui apenas faça o que foi pedido):
-        {history}
-
-        O que o outro jogador antes de você falou ou reagiu:
-        {new_generated_text}
-        """
+            f.write(f"\n{history_part_one}")
 
         response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
             contents=prompt,
         )
+
+        history = ""
+
+        with open("history.txt", 'r') as f:
+             for line in f:
+                  history += f.readline()
 
         new_generated_text_2 = response.text
 
         # TODO: AI player 2 
         await player_speak(2, new_generated_text_2)
 
-
-        instruction = f"""
-            Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
-
-            Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
-
-            **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
-
-            **OBJETIVO PRINCIPAL DA TRAMA DESDE O COMEÇO E UM RESUMO DE TUDO O QUE ACONTECEU ATÉ AGORA**
-            * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
-            * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
-            * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
-            * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
-            * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
-
-            **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
-
-            **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
-            ---
-            **Narração do Mestre:** {user_input}
-            **Última Resposta do Jogador 1:** {new_generated_text}
-            **Última Resposta do Jogador 2:** {new_generated_text_2}
-            ---
-            **O RESTO DO ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR (MODIFIQUE E ADAPTE COM AS NOVAS INFORMAÇÕES)**
-            {history}
-            """
+        instruction = history_maker(user_input, new_generated_text, new_generated_text_2, history=history)
 
         response2 = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
