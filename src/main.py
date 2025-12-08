@@ -60,7 +60,10 @@ async def main():
                 history += f.readline()
 
 
-        prompt = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. Um mestre está narrando
+        prompt = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. 
+        Você é o jogador 1, e vai identificar quem é você ou quando você que interagiu com base no contexto,
+        o mesmo vale para identificar seu colega.
+        Um mestre está narrando
         e você só reage aos eventos""" + user_input + """
         """ + """(seja curto, mas nem tanto e lembre-se que é uma fala de um personagem em tom coloquial, 
         mas não faça de propósito nem coloque jargões ou repetições, entre no personagem e reaja de uma forma
@@ -112,12 +115,14 @@ async def main():
         )
 
         result = response2.text
-        print(result)
 
         with open("history.txt", 'a') as f:
             f.write(f"\n{result}")
 
-        prompt2 = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. Um mestre está narrando
+        prompt2 = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. 
+        Você é o jogador 2, e vai identificar quem é você ou quando você que interagiu com base no contexto,
+        o mesmo vale para identificar seu colega.
+        Um mestre está narrando
         e você só reage aos eventos""" + user_input + """
         """ + """(seja curto, mas nem tanto e lembre-se que é uma fala de um personagem em tom coloquial, 
         mas não faça de propósito nem coloque jargões ou repetições, entre no personagem e reaja de uma forma
@@ -164,6 +169,7 @@ async def main():
             **Última Resposta do Jogador 2:** {new_generated_text_2}
             ---
             **O RESTO DO ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR (MODIFIQUE E ADAPTE COM AS NOVAS INFORMAÇÕES)**
+            {history}
             """
 
         response2 = gemma_client.models.generate_content(
@@ -199,7 +205,7 @@ async def player_speak(player : int, message : str):
                 f.write(request.content)
 
             run(split('cvlc file.wav'))
-            asyncio.sleep(duration_in_seconds)
+            # await asyncio.sleep(duration_in_seconds)
 
         elif player == 2:
             audio_res = murf_client.text_to_speech.generate(
@@ -217,7 +223,7 @@ async def player_speak(player : int, message : str):
                 f.write(request.content)
 
             run(split('cvlc file2.wav'))
-            asyncio.sleep(duration_in_seconds)
+            # await asyncio.sleep(duration_in_seconds)
 
 
 if __name__ == '__main__':
