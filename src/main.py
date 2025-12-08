@@ -31,6 +31,38 @@ gemma_client = genai.Client(api_key=GEMMA_API_KEY)
 murf_client = Murf(api_key=MURF_API_KEY)
 
 
+player1 = """"""
+
+player2 = """"""
+
+
+saving_message = f"""
+            Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
+
+            Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
+
+            **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
+
+            * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
+            * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
+            * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
+            * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
+            * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
+
+            **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
+
+            **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
+            ---
+            **Narração do Mestre:** {user_input}
+            **Última Resposta do Jogador 1:** {new_generated_text}
+            **Última Resposta do Jogador 2 (no turno anterior):** {new_generated_text}
+
+            o turno do jogador 1 acabou e agora é o turno do jogador 2.
+
+            ---
+            """
+
+
 async def main():
 
     if not os.path.exists(history_path):
@@ -39,19 +71,13 @@ async def main():
         with open("history.txt", "w") as fw:
                 pass
 
+    # TODO: fix problem: the AI players doesn't know who is who so they two think they are the player one.
     while True:
-    
+
+        # master's turn
         user_input = input("Diga o que ocorre:")
 
-        # TODO: check if there is an history.txt file
-
-        prompt = """Você é um boneco de jogo de rpg em jogo de aventura. Um mestre está narrando
-        e você só reage aos eventos""" + user_input + """
-        """ + """(seja curto, mas nem tanto e lembre-se que é uma fala de um personagem em tom coloquial, 
-        mas não faça de propósito nem coloque jargões ou repetições, entre no personagem e reaja de uma forma
-        como ele realmente iria se sentir nessa situação)
-        """
-
+        # DONE: check if there is an history.txt file
         history = "" 
 
         with open("history.txt", 'r') as f:
@@ -61,7 +87,7 @@ async def main():
 
 
         prompt = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. 
-        Você é o jogador 1, e vai identificar quem é você ou quando você que interagiu com base no contexto,
+        Você é o jogador 1 (um), e vai identificar quem é você ou quando você que interagiu com base no contexto,
         o mesmo vale para identificar seu colega.
         Um mestre está narrando
         e você só reage aos eventos""" + user_input + """
@@ -86,28 +112,8 @@ async def main():
         # Done: put player speak here
         await player_speak(1, new_generated_text)
 
-        instruction = f"""
-            Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
-
-            Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
-
-            **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
-
-            * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
-            * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
-            * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
-            * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
-            * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
-
-            **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
-
-            **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
-            ---
-            **Narração do Mestre:** {user_input}
-            **Última Resposta do Jogador 1:** {new_generated_text}
-            **Última Resposta do Jogador 2:** {new_generated_text}
-            ---
-            """
+        # TODO: fill here
+        # instruction = 
 
         response2 = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
@@ -120,8 +126,12 @@ async def main():
             f.write(f"\n{result}")
 
         prompt2 = f"""Você é um boneco de jogo de rpg em jogo de aventura, junto com outro jogador. 
-        Você é o jogador 2, e vai identificar quem é você ou quando você que interagiu com base no contexto,
+        Você é o jogador 2 (dois), e vai identificar quem é você ou quando você que interagiu com base no contexto,
         o mesmo vale para identificar seu colega.
+
+        Seu colega já fez a primeira ação, por isso você presume que deve ser o outro que ainda não realizou a ação,
+        além de usar o próprio histórico com base nisso para tirar essa conclusão.
+
         Um mestre está narrando
         e você só reage aos eventos""" + user_input + """
         """ + """(seja curto, mas nem tanto e lembre-se que é uma fala de um personagem em tom coloquial, 
@@ -133,6 +143,9 @@ async def main():
         aqui está a sequência de eventos do que você ou outros realizaram até então e prossiga a partir
         disso (se não tiver nada aqui apenas faça o que foi pedido):
         {history}
+
+        O que o outro jogador antes de você falou ou reagiu:
+        {new_generated_text}
         """
 
         response = gemma_client.models.generate_content(
@@ -206,6 +219,7 @@ async def player_speak(player : int, message : str):
 
             run(split('cvlc file.wav'))
             # await asyncio.sleep(duration_in_seconds)
+            return
 
         elif player == 2:
             audio_res = murf_client.text_to_speech.generate(
@@ -224,7 +238,7 @@ async def player_speak(player : int, message : str):
 
             run(split('cvlc file2.wav'))
             # await asyncio.sleep(duration_in_seconds)
-
+            return
 
 if __name__ == '__main__':
     asyncio.run(main())
