@@ -148,6 +148,7 @@ async def main():
 
             **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
 
+            **OBJETIVO PRINCIPAL DA TRAMA DESDE O COMEÇO E UM RESUMO DE TUDO O QUE ACONTECEU ATÉ AGORA**
             * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
             * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
             * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
@@ -162,6 +163,7 @@ async def main():
             **Última Resposta do Jogador 1:** {new_generated_text}
             **Última Resposta do Jogador 2:** {new_generated_text_2}
             ---
+            **O RESTO DO ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR (MODIFIQUE E ADAPTE COM AS NOVAS INFORMAÇÕES)**
             """
 
         response2 = gemma_client.models.generate_content(
@@ -172,7 +174,9 @@ async def main():
         result = response2.text
         print(result)
 
-        with open("history.txt", 'a') as f:
+        os.remove("history.txt")
+
+        with open("history.txt", 'w') as f:
             f.write(f"\n{result}")
 
 
