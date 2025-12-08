@@ -124,7 +124,7 @@ async def main():
         with open("history.txt", "w") as fw:
                 pass
 
-    # TODO: fix problem: the AI players doesn't know who is who so they two think they are the player one.
+    # DONE: fix problem: the AI players doesn't know who is who so they two think they are the player one.
     while True:
 
         # master's turn
