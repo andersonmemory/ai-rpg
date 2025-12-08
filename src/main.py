@@ -192,7 +192,7 @@ async def main():
             contents=instruction,
         )
 
-        final_definitive_history_file_text = final_definitive_history_file_response
+        final_definitive_history_file_text = final_definitive_history_file_response.text
         print(final_definitive_history_file_text)
 
         os.remove("history.txt")
