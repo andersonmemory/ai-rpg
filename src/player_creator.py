@@ -39,7 +39,6 @@ def main():
 
     Valor de iniciativa: {initiative_value}"""
 
-
     game_system = None
 
     # Loads the file into memory and store in game_system variable.
@@ -53,6 +52,7 @@ def main():
 
     with open(f"characters/{output_filename}", 'w') as f:
         f.write(response.text)
+
 
 if __name__ == '__main__':
 
