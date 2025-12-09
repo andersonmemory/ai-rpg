@@ -1,3 +1,6 @@
+
+
+
 ### Sistema do jogo ARQUIVO X Escrito por Tarcisio Lucas ###
 
 Este jogo foi feito utilizando Dominus, um sistema de RPG sem mestre. Você encontrará todas as
