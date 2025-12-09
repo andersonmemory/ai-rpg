@@ -16,9 +16,9 @@ GEMMA_API_KEY = os.getenv("GEMMA_API_KEY")
 
 client = genai.Client(api_key=GEMMA_API_KEY)
 
-game_system = None
+# game_system = None
 player_creator = None
-
+game_introduction = None
 
 
 def main():
@@ -32,6 +32,7 @@ def main():
     # Asks for user's basic description for the character.
     basic_description = input("Diga uma leve descrição de como quer que seja o personagem: ")
 
+    global game_introduction
     global initiative_value
     initiative_value = input("Iniciativa: ")
 
@@ -39,13 +40,7 @@ def main():
 
     Valor de iniciativa: {initiative_value}"""
 
-    game_system = None
-
-    # Loads the file into memory and store in game_system variable.
-    with open("settings/game_system.txt", 'r') as f:
-        game_system = f.read()
-
-    prompt = player_creator + basic_description + initiative_text + game_system
+    prompt = player_creator + basic_description + initiative_text + game_introduction 
 
     # Insert the prompt to the AI
     response = client.models.generate_content(model="gemma-3-27b-it", contents=prompt)
@@ -59,8 +54,8 @@ if __name__ == '__main__':
     with open("settings/player_creator_prompt.txt", 'r') as f:
         player_creator = f.read() 
 
-    with open("settings/game_system.txt", 'r') as f:
-       game_system = f.read() 
+    with open("settings/game_introduction.txt", 'r') as f:
+       game_introduction = f.read() 
 
     start = time.perf_counter()
     main()
