@@ -1,0 +1,41 @@
+
+
+
+
+
+Regra X – Role com vantagem , uma vez por cena, quando agir TOTALMENTE de acordo com o
+arquétipo do seu personagem
+
+Regra X - Os turnos se dão na ordem do maior ao menor de acordo com o valor da iniciativa de cada personagem.
+
+
+### REGRAS ###
+Estas são as regras do sistema Dominus.
+
+Regra 1: Preparação
+Escolha (ou role) um Arquétipo na tabela e dê um nome para seu personagem. Depois role um
+dado para cada uma das três colunas na tabela de Trama.
+
+Regra 2: História
+Para começar a sua história, escolha (ou role) um Lugar na tabela de Cenas. Sempre que entrar em
+uma Cena, role um dado. Se cair 3 ou menos, role um Personagem. Se cair 4 ou mais, role um Evento.
+Você pode ir para uma nova cena se achar apropriado (e tenha resolvido qualquer conflito
+aparente).
+
+Regra 3: Desafio
+Sempre que seu personagem tentar fazer algo que possa dar errado, você tem um Desafio: role
+um dado. Se tirar 4 ou mais, você conseguiu vencê-lo. Se houver algo nesta situação que lhe dê
+vantagem nesse Desafio, role 2 dados e escolha o maior. Caso algo lhe dê desvantagem, role 2
+dados e escolha o menor.
+
+Regra 4: Dilema
+Sempre que tiver uma dúvida cuja resposta não seja óbvia, determine duas opções possíveis (sim
+ou não, esquerda ou direita, acontece A ou acontece B etc) e role um dado. Se cair 3 ou menos é a
+primeira opção, e se cair 4 ou mais é a segunda opção.
+
+Regra 5: Banco de Ideias
+Sempre que precisar elaborar melhor um Lugar, Personagem ou Evento, role no Banco de Ideias e
+interprete o resultado de qualquer coluna de acordo com o Cenário.
+
+Regra X: Especial
+O Cenário pode ter regras especiais e únicas dele.
