@@ -20,7 +20,6 @@ client = genai.Client(api_key=GEMMA_API_KEY)
 start_time = None
 
 
-# game_system = None
 player_creator = None
 game_introduction = None
 
@@ -71,10 +70,6 @@ def main():
 
     start_time = time.perf_counter()
 
-    # 1, 6, 3
-    # Alves e Almeida se encontraram depois do trabalho, para a investigação de um sumiço desconhecido, não se sabe exatamente o motivo. 
-    # Eles sentem que precisam encontrar alguém, que deve saber o que está por trás disso, senão a verdade será esquecida.
-
     raw_plot = first + second + third
 
     world_explanation = world_plot_explainer(world_explanation, player1_summary, player2_summary, raw_plot)
@@ -93,7 +88,6 @@ def main():
 
     with open("data/plot.txt", 'w') as f:
         f.write(final_file)
-
 
 
 # logic for the plot creation
