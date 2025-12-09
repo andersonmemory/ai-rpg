@@ -40,10 +40,6 @@ with open("player1.txt", 'r') as f:
 with open("player2.txt", 'r') as f:
     player2 = f.read()
 
-print(player1)
-print(player2)
-
-
 def history_maker(master_narration, player1_actions, player2_actions : str = "", history : str = ""):
 
     saving_message = f"""
@@ -66,6 +62,8 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
                 **Narração do Mestre:** {master_narration}
                 **Última Resposta do Jogador 1:** {player1_actions}
 
+                OBRIGATÓRIO: se não consegue adicionar algo, então repita exatamente tudo que viu mas não deixe vazio
+                nem modifique informações anteriores. Caso contrário escreva com informações que você recebeu.
                 """
 
     if player2_actions:
@@ -110,7 +108,9 @@ async def main():
             contents=player1_prompt,
         )
 
+        # TODO: fix players speech, they have to act as the players
         player1_text = player1_response.text
+        print(player1_text)
 
         # Done: put player speak here
         await player_speak(1, player1_text)
