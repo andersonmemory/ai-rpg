@@ -16,6 +16,9 @@ História: <1-2 frases>
 Item: <nada ou alguma coisa caso a descrição informe [três palavras ou menos para cada item]>
 Habilidade: <nenhuma ou alguma coisa caso a descrição informe [três palavras ou menos]>
 
+Personalidade: <alguma caso a descrição informe ou caso não tenha, invente uma [dez palavras ou menos]>
+Modo de jogar: <invente uma (dois exemplos: pergunta ao mestre se pode fazer X, Y ou Z; cria planos e estratégias para sobreviver;)>
+
 ### Ambientação de jogo ###
 
 Você interpretará agentes do FBI responsáveis pelos Arquivos X – casos não resolvidos, sem
