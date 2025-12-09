@@ -16,6 +16,9 @@ Arquétipos
 5 Nerd Hacker Jornalista: A verdade precisa ser revelada à todos
 6 Agente Inocente: Não faz ideia no que está se metendo
 
+Regra X – Role com vantagem , uma vez por cena, quando agir TOTALMENTE de acordo com o
+arquétipo do seu personagem
+
 REGRAS
 Estas são as regras do sistema Dominus.
 Regra 1: Preparação
@@ -40,6 +43,4 @@ Sempre que precisar elaborar melhor um Lugar, Personagem ou Evento, role no Banc
 interprete o resultado de qualquer coluna de acordo com o Cenário.
 Regra X: Especial
 O Cenário pode ter regras especiais e únicas dele.
-
-Regra X – Role com vantagem , uma vez por cena, quando agir TOTALMENTE de acordo com o
-arquétipo do seu personagem.
+.
