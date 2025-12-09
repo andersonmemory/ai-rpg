@@ -6,7 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import sys
-
+import time
 
 env_path = Path.cwd().parent.resolve() / ".env"
 
@@ -62,4 +62,8 @@ if __name__ == '__main__':
     with open("settings/game_system.txt", 'r') as f:
        game_system = f.read() 
 
+    start = time.perf_counter()
     main()
+    end = time.perf_counter()
+    time_elapsed = end - start
+    print("✅ Success. \n⏱️ Time taken: {time_elapsed:.06f}") 
