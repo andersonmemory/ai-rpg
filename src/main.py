@@ -16,6 +16,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+import sys
+
 env_path = Path.cwd().parent.resolve() / ".env"
 
 load_dotenv(dotenv_path=env_path)
@@ -78,6 +80,12 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
 
 
 async def main():
+
+    if not len(sys.argv) == 3:
+        print("Usage: python main.py <./path/to/player1.txt> <./path/to/player2.txt>")
+
+    player1 = sys.argv[1]
+    player2 = sys.argv[2]
 
     if not os.path.exists(history_path):
         print("Não há nenhum arquivo de histórico, criando um.")
