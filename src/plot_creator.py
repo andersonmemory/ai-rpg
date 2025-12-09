@@ -3,6 +3,7 @@ from google import genai
 
 from pathlib import Path
 
+
 from dotenv import load_dotenv
 import os
 import sys
@@ -25,12 +26,6 @@ game_introduction = None
 
 def main():
 
-    # if not len(sys.argv) == 2:
-    #     print("Usage: python player_creator.py <output.txt>")
-    #     sys.exit()
-
-    # output_filename = sys.argv[1]
-
     global start_time
 
     plot_info = None
@@ -43,6 +38,7 @@ def main():
     second = int(input("Você precisa: "))
     third = int(input("Senão: "))    
 
+    # Grab part of the plot info based on the dice's values.
     first = plot(first, "algo aconteceu", plot_info)
     second = plot(second,"você precisa", plot_info)
     third = plot(third, "senão", plot_info)
@@ -68,7 +64,7 @@ def main():
     player1_summary = player_summarizer(player1)
     player2_summary = player_summarizer(player2)
 
-    print(player1_summary)
+    print(f"{player1_summary}\n")
     print(player2_summary)
 
     world_explanation = input("Descreva a trama, objetivo e como os jogadores se encontraram: ")
@@ -79,13 +75,25 @@ def main():
     # Alves e Almeida se encontraram depois do trabalho, para a investigação de um sumiço desconhecido, não se sabe exatamente o motivo. 
     # Eles sentem que precisam encontrar alguém, que deve saber o que está por trás disso, senão a verdade será esquecida.
 
-    # prompt = player_creator + basic_description + initiative_text + game_introduction 
+    raw_plot = first + second + third
 
-    # Insert the prompt to the AI
-    # response = client.models.generate_content(model="gemma-3-27b-it", contents=prompt)
+    world_explanation = world_plot_explainer(world_explanation, player1_summary, player2_summary, raw_plot)
 
-    # with open(f"characters/{output_filename}", 'w') as f:
-        # f.write(response.text)
+    how_to_play = None
+
+    with open("settings/how_to_play_prompt.txt", 'r') as f:
+        how_to_play = f.read()
+ 
+
+    how_to_play = how_to_play + world_explanation
+
+    final_file = how_to_play
+
+    print(final_file)
+
+    with open("data/plot.txt", 'w') as f:
+        f.write(final_file)
+
 
 
 # logic for the plot creation
@@ -150,13 +158,55 @@ def player_summarizer(player_info):
 
     return response.text
 
-def world_explainer():
+def world_plot_explainer(explanation : str, player1_summary : str, player2_summary : str, raw_plot : str):
 
-    pass
+    prompt = f"""
 
-# you_need = int(input("Você precisa: "))
-# otherwise = int(input("Senão: "))    
 
+    ### Instrução ###
+
+    SISTEMA: você está definindo uma trama principal de um jogo RPG.
+
+    Reescreva os dados fornecidos na seção "dados" para que a mensagem da trama 
+    fique mais clara e coerente. Evite mudar informações como nomes de pessoas,
+    quem procurar ou eventos a se fazer.
+
+    Você vai escrever no formato apresentado na seção "formato" 
+
+    Uma leve explicação de cada jogador está presente, para ser enriquecer o texto
+    que resume a trama principal. A explicação está na seção "jogadores"
+
+    Note que, somente a informação da trama deve ser posta, evitando qualquer tipo
+    de outra formatação como <>, ### ou até mesmo títulos.
+
+    Na seção "Plot original" é a base e o esqueleto da trama inteira. Por isso,
+    é de extrema importância que seja adaptado no texto final.
+
+    ### Jogadores ###
+
+    {player1_summary}
+
+    {player2_summary}
+
+    ### Plot original ###
+
+    Plot original: 
+    
+    {raw_plot}
+
+
+    ### Formato ###
+    <informação-sobre-a-trama>
+
+
+    ### Dados ####
+
+    {explanation}
+    """
+
+    response = client.models.generate_content(model="gemma-3-27b-it", contents=prompt)
+
+    return response.text
 
 
 if __name__ == '__main__':
