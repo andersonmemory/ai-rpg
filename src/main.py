@@ -9,6 +9,8 @@ import requests
 from subprocess import run
 from shlex import split
 
+from google import genai
+
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -25,6 +27,7 @@ history_path = Path.cwd().resolve() / "history.txt"
 
 
 # The client gets the API key from the environment variable `GEMMA_API_KEY`.
+gemma_client = genai.Client(api_key=GEMMA_API_KEY)
 murf_client = Murf(api_key=MURF_API_KEY)
 
 
