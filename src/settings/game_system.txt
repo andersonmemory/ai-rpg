@@ -43,4 +43,3 @@ Sempre que precisar elaborar melhor um Lugar, Personagem ou Evento, role no Banc
 interprete o resultado de qualquer coluna de acordo com o Cenário.
 Regra X: Especial
 O Cenário pode ter regras especiais e únicas dele.
-.
