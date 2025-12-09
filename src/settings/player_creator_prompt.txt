@@ -12,7 +12,7 @@ Idade: <idade - invente uma idade>
 Arquétipo: <utilize o mesmo que foi dito em "descrição do personagem", se não há ou está diferente, use algum da seção "arquétipos"
 que mais se encaixa com o arquétipo que foi mencionado. Escreva exatamente o mesmo arquétipo encontrado da seção "arquétipo" no formato """Arquétipo: <descrição>.""">
 
-Iniciativa: <número fornecido na seção de iniciativa>
+Iniciativa: <OBRIGATÓRIO INSERIR O EXATO MESMO NÚMERO DE INICIATIVA QUE FOI ENCONTRADO NA SEÇÃO INICIATIVA SEM ALTERAR>
 
 Aparência: <5-10 palavras que descrevem - invente uma aparência>
 
@@ -25,4 +25,4 @@ Modo de jogar: <invente uma (dois exemplos: pergunta ao mestre se pode fazer X, 
 
 ### Descrição do personagem ###
 
-Descrição:  
+Descrição: 

@@ -19,11 +19,7 @@ client = genai.Client(api_key=GEMMA_API_KEY)
 game_system = None
 player_creator = None
 
-initiative_value = None
-initiative_text = f"""
-### Iniciativa ###
 
-Valor de iniciativa: {initiative_value}"""
 
 def main():
 
@@ -39,13 +35,18 @@ def main():
     global initiative_value
     initiative_value = input("Iniciativa: ")
 
+    initiative_text = f"""\n\n### Iniciativa ###
+
+    Valor de iniciativa: {initiative_value}"""
+
+
     game_system = None
 
     # Loads the file into memory and store in game_system variable.
     with open("settings/game_system.txt", 'r') as f:
         game_system = f.read()
 
-    prompt = player_creator + basic_description + game_system
+    prompt = player_creator + basic_description + initiative_text + game_system
 
     # Insert the prompt to the AI
     response = client.models.generate_content(model="gemma-3-27b-it", contents=prompt)
