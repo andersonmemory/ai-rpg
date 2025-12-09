@@ -1,0 +1,26 @@
+### Instrução ###
+
+Você está criando um prompt de personagem homem de RPG. 
+Use a descrição base fornecida de como o personagem é em "descrição do personagem", e depois complete os dados 
+utilizando o formato de escrita apresentada. Deve haver ligações com o mundo em que se passa,
+fornecido na seção "ambientação de jogo" e obrigatório estar ligado à descrição do personagem em "descrição do personagem".
+
+### Formato ###
+
+Nome: <nome (Brasileiro) - invente um nome>
+Idade: <idade - invente uma idade>
+
+Aparência: <5-10 palavras que descrevem - invente uma aparência>
+
+História: <1-2 frases>
+Item: <nada ou alguma coisa caso a descrição informe [três palavras ou menos para cada item]>
+Habilidade: <nenhuma ou alguma coisa caso a descrição informe [três palavras ou menos]>
+
+### Ambientação de jogo ###
+
+Você interpretará agentes do FBI responsáveis pelos Arquivos X – casos não resolvidos, sem
+explicação, e sobrenaturais. Alienígenas, monstros...a Verdade está lá fora.
+
+### Descrição do personagem ###
+
+Descrição: 
