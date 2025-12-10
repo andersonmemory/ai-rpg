@@ -209,6 +209,10 @@ async def player_turn(master_text, player_id : int):
     
     history = history_maker(master_text, player_text) 
 
+    register_to_history(history)
+
+def register_to_history(history : str):
+    
     new_registry_response = gemma_client.models.generate_content(
         model="gemma-3-27b-it",
         contents=history,
@@ -220,10 +224,6 @@ async def player_turn(master_text, player_id : int):
 
     with open("history.txt", 'w') as f:
         f.write(f"\n{new_registry_text}")
-
-
-def register_to_history():
-    pass
 
 if __name__ == '__main__':
     asyncio.run(main())
