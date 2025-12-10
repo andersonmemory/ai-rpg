@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 import os
 
 from pyfiglet import Figlet
+from termcolor import cprint
 
 import sys
 
@@ -201,10 +202,8 @@ async def main():
 
     summary = gemma_client.models.generate_content(model="gemma-3-27b-it", contents=introduce_game_prompt).text
 
-    print("########################################################")
-
-    print(plot, end="\n\n")
-    print(summary)
+    cprint(plot, "green", end="\n\n")
+    cprint(summary, "yellow")
 
     # DONE: fix problem: the AI players doesn't know who is who so they two think they are the player one.
     while True:
