@@ -61,4 +61,4 @@ if __name__ == '__main__':
     main()
     end = time.perf_counter()
     time_elapsed = end - start
-    print(f"✅ Success. \n⏱️ Time taken: {time_elapsed:.06f}") 
+    print(f"✅ Success. \n⏱️ Time taken: {time_elapsed:.10f}") 
