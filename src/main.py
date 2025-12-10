@@ -245,7 +245,7 @@ async def player_speak(player_id : int, message : str):
         with open(temp_audio_path / f"file{player_id}.wav", 'wb') as f:
             f.write(request.content)
 
-        run(split(f'cvlc ' + temp_audio_path / f'file{player_id}.wav'))
+        run(split(f"cvlc {temp_audio_path / f'file{player_id}.wav'}"))
 
         return
 
