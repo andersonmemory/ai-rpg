@@ -39,6 +39,7 @@ history_path = Path.cwd().resolve() / "data" / "history.txt"
 # initial_setup
 data_path = Path.cwd().resolve() / "data"
 characters_path = Path.cwd().resolve() / "characters" 
+temp_audio_path = Path.cwd().resolve() / "temp_audios"
 
 # The client gets the API key from the environment variable `GEMMA_API_KEY`.
 gemma_client = genai.Client(api_key=GEMMA_API_KEY)
@@ -241,10 +242,11 @@ async def player_speak(player_id : int, message : str):
 
         request = requests.get(audio_res.audio_file)
 
-        with open(f"file{player_id}.wav", 'wb') as f:
+        with open(temp_audio_path / f"file{player_id}.wav", 'wb') as f:
             f.write(request.content)
 
-        run(split('cvlc file.wav'))
+        run(split(f'cvlc ' + temp_audio_path / f'file{player_id}.wav'))
+
         return
 
 
@@ -306,7 +308,7 @@ def register_to_history(history : str):
 
     new_registry_text = new_registry_response.text
 
-    os.remove("history.txt")
+    os.remove(history_path)
 
     with open(history_path, 'w') as f:
         f.write(f"\n{new_registry_text}")
@@ -319,6 +321,8 @@ def initial_setup():
     if not os.path.exists(data_path):
         os.mkdir(data_path)
 
+    if not os.path.exists(temp_audio_path):
+        os.mkdir(temp_audio_path)
 
 def clear_screen():
      os.system('cls' if os.name == 'nt' else 'clear')
