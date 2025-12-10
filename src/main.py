@@ -153,12 +153,18 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
 
                 ### Informações essenciais para incluir no resumo ### 
 
+                Acompanhe no exato formato que ver em "formato" com as informações deste, evite acrescentar caracteres especiais.
+
+                ### Formato ###
+
                 Contexto e Ambiente: <Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali>
                 Personagens: <Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas; informações de ambos jogadores>
                 Inventário/Recursos: <Itens importantes guardados ou usados recentemente; informações de ambos jogadores>
                 Interações: <NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações; informações de ambos jogadores>.
                 Sequência de Ações: <O que foi feito, as últimas ações dos dois jogadores e a resposta do ambiente/Mestre a elas>.
-                
+
+                ### Presente ### (inclua essa linha)
+
                 Presente: <último diálogo, última ação realizada, e o que cada um dos dois personagens está pensando até o momento>
 
                 Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.
@@ -289,7 +295,7 @@ async def player_turn(master_text, player_id : int):
 
     with open(history_path, 'r') as f:
         for line in f:
-            print(line)
+            print(line, end="")
             history += f.readline()
 
     # Player's turn
