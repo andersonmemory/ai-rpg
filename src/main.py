@@ -153,7 +153,7 @@ async def player_speak(player : int, message : str):
 
         audio_res = murf_client.text_to_speech.generate(
         text=message,
-        voice_id="Silvio"
+        voice_id=voice_hashmap[player]
         )
 
         duration_in_seconds = audio_res.audio_length_in_seconds
