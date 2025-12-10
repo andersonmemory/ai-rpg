@@ -190,7 +190,7 @@ async def main():
          plot = f.read()
     
 
-    summary = gemma_client.models.generate_content(model="gemma-3-27b-it", content=introduce_game_prompt).text
+    summary = gemma_client.models.generate_content(model="gemma-3-27b-it", contents=introduce_game_prompt).text
 
     print(plot)
     print(summary)
