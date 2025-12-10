@@ -25,6 +25,7 @@ load_dotenv(dotenv_path=env_path)
 GEMMA_API_KEY = os.getenv("GEMMA_API_KEY")
 MURF_API_KEY = os.getenv("MURF_API_KEY")
 
+
 # Data related
 how_to_play_and_plot_explanation_path = Path.cwd().resolve() / "data" / "how_to_play_and_plot_explanation.txt"
 history_path = Path.cwd().resolve() / "data" / "history.txt"
@@ -54,13 +55,49 @@ how_to_play_and_plot_explanation = None
 with open(how_to_play_and_plot_explanation_path, 'r') as f:
     how_to_play_and_plot_explanation = f.read()
 
+info_p1 = None
+
 with open(characters_path / "player1.txt", 'r') as f:
-    info = f.read()
-    player_map[1].prompt = how_to_play_and_plot_explanation + "\n\n" + info
+    info_p1 = f.read()
+    player_map[1].prompt = how_to_play_and_plot_explanation + "\n\n" + info_p1
+
+info_p2 = None
 
 with open(characters_path / "player2.txt", 'r') as f:
-    info = f.read()
-    player_map[2].prompt = how_to_play_and_plot_explanation + "\n\n" + info
+    info_p2 = f.read()
+    player_map[2].prompt = how_to_play_and_plot_explanation + "\n\n" + info_p2
+
+
+introduce_game_prompt = f"""
+
+    ### Instrução ###
+
+    Você é um contador de histórias.
+
+    Deve simplificar ao máximo os dados fornecidos em até no máximo 2 frases,
+
+    o mais importante é que deve fornecer a iniciativa dos dois personagens.
+
+    O personagem com maior iniciativa você descreve primeiro, seguida pelos outros.
+
+    As descrições dos personagens e de 1 frase.
+
+    na mesma ordem, descrescente.
+
+    ### Formato ###
+
+    Nome: <nome do personagem dado>
+    Idade: <idade mencionada>
+    Visão geral: <visão geral dada nos dados>
+    Initiativa: <iniciativa dada nos dados>
+
+    ### Dados ###
+
+    {info_p1}
+
+    {info_p2}
+
+"""
 
 
 def history_maker(master_narration, player1_actions, player2_actions : str = "", history : str = ""):
@@ -146,6 +183,17 @@ async def main():
 
         with open("data/history.txt", "w") as fw:
                 pass
+
+    plot = None
+    
+    with open(Path.cwd().resolve() / "data" / "plot.txt", 'r') as f:
+         plot = f.read()
+    
+
+    summary = gemma_client.models.generate_content(model="gemma-3-27b-it", content=introduce_game_prompt).text
+
+    print(plot)
+    print(summary)
 
     # DONE: fix problem: the AI players doesn't know who is who so they two think they are the player one.
     while True:
