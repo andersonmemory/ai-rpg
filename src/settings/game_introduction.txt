@@ -1,0 +1,21 @@
+
+
+
+### Sistema do jogo ARQUIVO X Escrito por Tarcisio Lucas e modificado por andersonmemory ###
+
+Este jogo foi feito utilizando Dominus, um sistema de RPG sem mestre. Você encontrará todas as
+regras do Dominus no verso desta folha.
+
+### Ambientação ###
+
+Você interpretará agentes do FBI responsáveis pelos Arquivos X – casos não resolvidos, sem
+explicação, e sobrenaturais. Alienígenas, monstros...a Verdade está lá fora.
+
+### Arquétipos ###
+
+1 Agente Paranóico: Tudo é uma conspiração, um plano dentro de um plano
+2 Agente Cético: O sobrenatural não existe. Aliens também não
+3 Superior Misterioso: A Verdade deve ficar escondida
+4 Agente Duplo: Ninguém sabe de qual lado está a lealdade
+5 Nerd Hacker Jornalista: A verdade precisa ser revelada à todos
+6 Agente Inocente: Não faz ideia no que está se metendo
