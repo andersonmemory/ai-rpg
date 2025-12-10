@@ -29,6 +29,9 @@ MURF_API_KEY = os.getenv("MURF_API_KEY")
 # Data related
 how_to_play_and_plot_explanation_path = Path.cwd().resolve() / "data" / "how_to_play_and_plot_explanation.txt"
 history_path = Path.cwd().resolve() / "data" / "history.txt"
+
+# initial_setup
+data_path = Path.cwd().resolve / "data"
 characters_path = Path.cwd().resolve() / "characters" 
 
 # The client gets the API key from the environment variable `GEMMA_API_KEY`.
@@ -301,6 +304,16 @@ def register_to_history(history : str):
     with open("history.txt", 'w') as f:
         f.write(f"\n{new_registry_text}")
 
+def initial_setup():
+
+    if not os.path.exists(characters_path):
+        os.mkdir(characters_path)
+
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
+
+
 if __name__ == '__main__':
+    initial_setup()
     asyncio.run(main())
 
