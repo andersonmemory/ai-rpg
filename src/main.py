@@ -33,8 +33,19 @@ history_path = Path.cwd().resolve() / "history.txt"
 gemma_client = genai.Client(api_key=GEMMA_API_KEY)
 murf_client = Murf(api_key=MURF_API_KEY)
 
-player1 = ""
-player2 = ""
+class Player():
+    def __init__(self, prompt):
+        self.prompt = prompt
+
+
+player1 = Player("")
+player2 = Player("")
+
+player_map = {
+    1: player1,
+    2: player2,
+}
+
 
 with open("player1.txt", 'r') as f:
     player1 = f.read()
@@ -135,46 +146,29 @@ async def main():
 
 async def player_speak(player : int, message : str):
 
-        if player == 1:
+        voice_hashmap = {
+            1: "Silvio",
+            2: "Gustavo",
+        }
 
-            audio_res = murf_client.text_to_speech.generate(
-            text=message,
-            voice_id="Silvio"
-            )
+        audio_res = murf_client.text_to_speech.generate(
+        text=message,
+        voice_id="Silvio"
+        )
 
-            duration_in_seconds = audio_res.audio_length_in_seconds
+        duration_in_seconds = audio_res.audio_length_in_seconds
 
-            print(f"duração do áudio é: {duration_in_seconds}")
+        print(f"duração do áudio é: {duration_in_seconds}")
 
-            request = requests.get(audio_res.audio_file)
+        request = requests.get(audio_res.audio_file)
 
-            with open("file.wav", 'wb') as f:
-                f.write(request.content)
+        with open(f"file{player}.wav", 'wb') as f:
+            f.write(request.content)
 
-            run(split('cvlc file.wav'))
-            # await asyncio.sleep(duration_in_seconds)
-            return
+        run(split('cvlc file.wav'))
+        return
 
-        elif player == 2:
-            audio_res = murf_client.text_to_speech.generate(
-            text=message,
-            voice_id="Gustavo"
-            )
-
-            duration_in_seconds = audio_res.audio_length_in_seconds
-
-            print(f"duração do áudio é: {duration_in_seconds}")
-
-            request = requests.get(audio_res.audio_file)
-
-            with open("file2.wav", 'wb') as f:
-                f.write(request.content)
-
-            run(split('cvlc file2.wav'))
-            # await asyncio.sleep(duration_in_seconds)
-            return
-
-async def player_turn(master_text):
+async def player_turn(master_text, player : int):
 
     # It's assumed there will be always an .txt file named history.txt
     history = "" 
@@ -184,21 +178,23 @@ async def player_turn(master_text):
             print(line)
             history += f.readline()
 
-    player1_prompt = f"""{player1} 
-    Descrição dos eventos ocorridos:
-    {history}"""
+    # Player's turn
+    await player_complete_action
+    async def player_complete_action(player_prompt : str, history : str):
+        player_prompt = f"""{player_map[player]} 
+        Descrição dos eventos ocorridos:
+        {history}"""
 
-    player1_response = gemma_client.models.generate_content(
-        model="gemma-3-27b-it",
-        contents=player1_prompt,
-    )
+        player_response = gemma_client.models.generate_content(
+            model="gemma-3-27b-it",
+            contents=player_prompt,
+        )
 
-    # TODO: fix players speech, they have to act as the players
-    player1_text = player1_response.text
-    print(player1_text)
+        player_text = player_response.text
+        print(player_text)
 
-    # Done: put player speak here
-    await player_speak(1, player1_text)
+        # Done: put player speak here
+        await player_speak(player, player_text)
 
     # TODO: fill here
     instruction_history = history_maker(user_input, player1_text) 
