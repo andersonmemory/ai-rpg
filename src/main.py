@@ -189,9 +189,8 @@ async def main():
     print(font.renderText("Trama"))
 
     if not os.path.exists(history_path):
-        print("Não há nenhum arquivo de histórico, criando um.")
 
-        with open("data/history.txt", "w") as fw:
+        with open(history_path, "w") as fw:
                 pass
 
     plot = None
@@ -212,7 +211,7 @@ async def main():
  
         history = ""
 
-        with open("data/history.txt", 'r') as f:
+        with open(history_path, 'r') as f:
              history = f.read()
 
         # master's turn
@@ -287,7 +286,7 @@ async def player_turn(master_text, player_id : int):
     # It's assumed there will be always a .txt file named history.txt
     history = "" 
 
-    with open("history.txt", 'r') as f:
+    with open(history_path, 'r') as f:
         for line in f:
             print(line)
             history += f.readline()
@@ -308,9 +307,9 @@ def register_to_history(history : str):
 
     new_registry_text = new_registry_response.text
 
-    os.remove(history.txt)
+    os.remove("history.txt")
 
-    with open("history.txt", 'w') as f:
+    with open(history_path, 'w') as f:
         f.write(f"\n{new_registry_text}")
 
 def initial_setup():
