@@ -31,7 +31,7 @@ how_to_play_and_plot_explanation_path = Path.cwd().resolve() / "data" / "how_to_
 history_path = Path.cwd().resolve() / "data" / "history.txt"
 
 # initial_setup
-data_path = Path.cwd().resolve / "data"
+data_path = Path.cwd().resolve() / "data"
 characters_path = Path.cwd().resolve() / "characters" 
 
 # The client gets the API key from the environment variable `GEMMA_API_KEY`.
