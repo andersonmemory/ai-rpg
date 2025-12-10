@@ -84,13 +84,11 @@ def main():
 
     final_file = how_to_play
 
-    print(final_file)
-
     with open("data/how_to_play_and_plot_explanation.txt", 'w') as f:
         f.write(final_file)
 
     with open("data/plot.txt", 'w') as f:
-        f.write(final_file)
+        f.write(world_explanation)
 
 # logic for the plot creation
 def plot(die, type : str, plot : str):
