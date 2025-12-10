@@ -44,28 +44,57 @@ with open("player2.txt", 'r') as f:
 
 def history_maker(master_narration, player1_actions, player2_actions : str = "", history : str = ""):
 
+    plot = None
+    
+    with open('data/plot.txt', 'r') as f:
+        plot = f.read() 
+
     saving_message = f"""
-                Você é um **Cronista da Aventura** com a tarefa de criar um resumo conciso e completo do histórico de jogo (session history).
 
-                Este resumo servirá como base de memória para a continuidade da narrativa, devendo ser totalmente compreensível para qualquer um que o leia pela primeira vez, permitindo a retomada imediata da história a partir do ponto final.
+                ### Instrução ###
 
-                **INFORMAÇÕES ESSENCIAIS A INCLUIR NO RESUMO:**
+                Função: você é um cronista da aventura com a tarefa de criar um 
+                resumo conciso e completo do histórico de jogo (session history),
+                utilizando os dados fornecidos da seção "dados".
 
-                * **Contexto e Ambiente:** Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali.
-                * **Personagem:** Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas.
-                * **Inventário/Recursos:** Itens importantes guardados ou usados recentemente.
-                * **Interações:** NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações.
-                * **Sequência de Ações:** O que foi feito, as últimas ações do personagem e a resposta do ambiente/Mestre a elas.
+                O resumo serve como memória para continuar a narrativa. Alguém que leia 
+                pela primeira vez deve ser capaz de retomar a história a partir do ponto final de maneira imediata.
 
-                **Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.**
+                A seção "descrição do trama deste jogo" serve para lhe dar contexto. Evite usar essa informação,
+                a menos que veja pontos no resumo que são explícitos ou implicitos e estão ligados com a 
+                intenção do personagem com a trama.
+                
+                ### Como se comportar ###
 
-                **TEXTO COMPLETO A SER RESUMIDO E COMPACTADO:**
-                ---
-                **Narração do Mestre:** {master_narration}
-                **Última Resposta do Jogador 1:** {player1_actions}
+                evite fazer modificações de informações existentes a menos que isso deixe mais curta,
+                sem sobrescrever. Escreva informações que recebeu, tornando mais curtas.
 
-                OBRIGATÓRIO: se não consegue adicionar algo, então repita exatamente tudo que viu mas não deixe vazio
-                nem modifique informações anteriores. Caso contrário escreva com informações que você recebeu.
+                Você vai adicionar nova informação em cima da que já lhe foi fornecida na seção
+                "ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR", apenas simplificando os atos anteriores, para
+                construir uma narrativa contínua.
+
+                Quando ler "jogador" entenda como personagens controláveis.
+
+                ### Descrição do trama deste jogo ###
+
+                {plot}
+
+                ### Informações essenciais para incluir no resumo ### 
+
+                Contexto e Ambiente: <Onde o personagem está, como o local é (descrição, atmosfera - calmo, perigoso, etc.) e como ele chegou ali>
+                Personagens: <Identidade, ferimentos recentes, estado de ânimo, habilidades relevantes usadas; informações de ambos jogadores>
+                Inventário/Recursos: <Itens importantes guardados ou usados recentemente; informações de ambos jogadores>
+                Interações: <NPCs encontrados, diálogos cruciais, pedidos de ajuda ou informações; informações de ambos jogadores>.
+                Sequência de Ações: <O que foi feito, as últimas ações dos dois jogadores e a resposta do ambiente/Mestre a elas>.
+                
+                Presente: <último diálogo, última ação realizada, e o que cada um dos dois personagens está pensando até o momento>
+
+                Sintetize o máximo, mantendo apenas o essencial para a continuidade da história.
+
+                ### Dados ###
+                Narração do Mestre: {master_narration}
+                Última Resposta do Jogador 1: {player1_actions}
+
                 """
 
     if player2_actions:
@@ -73,8 +102,12 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
         ---"""
 
     if history:
-        saving_message += f"""**O RESTO DO ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR 
-        (MODIFIQUE E ADAPTE COM AS NOVAS INFORMAÇÕES)**{history}"""
+        saving_message += f"""
+        
+        ### O ARQUIVO INTEIRO DA HISTÓRIA ANTERIOR ###
+        ### MODIFIQUE E ADAPTE COM AS NOVAS INFORMAÇÕES ###
+        
+        Arquivo: <caso ler nada após essa linha, ignore> {history}"""
 
     return saving_message
 
