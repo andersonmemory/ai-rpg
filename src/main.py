@@ -60,13 +60,16 @@ with open(how_to_play_and_plot_explanation_path, 'r') as f:
 
 info_p1 = None
 
-with open(characters_path / "player1.txt", 'r') as f:
+player1_file = input("Arquivo do player1: ")
+player2_file = input("Arquivo do player2: ")
+
+with open(characters_path / f"{player1_file}", 'r') as f:
     info_p1 = f.read()
     player_map[1].prompt = how_to_play_and_plot_explanation + "\n\n" + info_p1
 
 info_p2 = None
 
-with open(characters_path / "player2.txt", 'r') as f:
+with open(characters_path / f"{player2_file}", 'r') as f:
     info_p2 = f.read()
     player_map[2].prompt = how_to_play_and_plot_explanation + "\n\n" + info_p2
 
@@ -175,12 +178,6 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
 
 async def main():
 
-
-    if not len(sys.argv) == 3:
-        print("Usage: python main.py <player1.txt> <player2.txt>")
-
-    player1_path = characters_path / sys.argv[1]
-    player2_path = characters_path / sys.argv[2]
     if not os.path.exists(history_path):
         print("Não há nenhum arquivo de histórico, criando um.")
 
