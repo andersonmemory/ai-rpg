@@ -25,13 +25,13 @@ load_dotenv(dotenv_path=env_path)
 GEMMA_API_KEY = os.getenv("GEMMA_API_KEY")
 MURF_API_KEY = os.getenv("MURF_API_KEY")
 
+# Data related
 history_path = Path.cwd().resolve() / "history.txt"
 
 
 # The client gets the API key from the environment variable `GEMMA_API_KEY`.
 gemma_client = genai.Client(api_key=GEMMA_API_KEY)
 murf_client = Murf(api_key=MURF_API_KEY)
-
 
 player1 = ""
 player2 = ""
@@ -99,78 +99,6 @@ async def main():
         # master's turn
         user_input = input("Diga o que ocorre: ")
 
-        # DONE: check if there is an history.txt file
-        history = "" 
-
-        with open("history.txt", 'r') as f:
-           for line in f:
-                print(line)
-                history += f.readline()
-
-        player1_prompt = f"""{player1} 
-        Descrição dos eventos ocorridos:
-        {history}"""
-
-        player1_response = gemma_client.models.generate_content(
-            model="gemma-3-27b-it",
-            contents=player1_prompt,
-        )
-
-        # TODO: fix players speech, they have to act as the players
-        player1_text = player1_response.text
-        print(player1_text)
-
-        # Done: put player speak here
-        await player_speak(1, player1_text)
-
-        # TODO: fill here
-        instruction_history = history_maker(user_input, player1_text) 
-
-        history_saver_one_response = gemma_client.models.generate_content(
-            model="gemma-3-27b-it",
-            contents=instruction_history,
-        )
-
-        history_saver_one_text = history_saver_one_response.text
-
-        with open("history.txt", 'a') as f:
-            f.write(f"\n{history_saver_one_text}")
-
-        player2_prompt = f"""{player2} 
-        Descrição dos eventos ocorridos:
-        {history_saver_one_text}"""
-
-        player2_response = gemma_client.models.generate_content(
-            model="gemma-3-27b-it",
-            contents=player2_prompt + "É sua vez de agir agora, o turno é seu.",
-        )
-
-        history = ""
-        # TODO: is this necessary since we have line 152?
-        with open("history.txt", 'r') as f:
-             for line in f:
-                  history += f.readline()
-
-        player2_text = player2_response.text
-
-        # TODO: AI player 2 
-        await player_speak(2, player2_text)
-
-        instruction = history_maker(user_input, player1_text, player2_text, history=history)
-
-        final_definitive_history_file_response = gemma_client.models.generate_content(
-            model="gemma-3-27b-it",
-            contents=instruction,
-        )
-
-        final_definitive_history_file_text = final_definitive_history_file_response.text
-        print(final_definitive_history_file_text)
-
-        os.remove("history.txt")
-
-        with open("history.txt", 'w') as f:
-            f.write(f"\n{final_definitive_history_file_text}")
-
 
 async def player_speak(player : int, message : str):
 
@@ -212,6 +140,84 @@ async def player_speak(player : int, message : str):
             run(split('cvlc file2.wav'))
             # await asyncio.sleep(duration_in_seconds)
             return
+
+async def player_turn(master_text):
+
+    # It's assumed there will be always an .txt file named history.txt
+    history = "" 
+
+    with open("history.txt", 'r') as f:
+        for line in f:
+            print(line)
+            history += f.readline()
+
+    player1_prompt = f"""{player1} 
+    Descrição dos eventos ocorridos:
+    {history}"""
+
+    player1_response = gemma_client.models.generate_content(
+        model="gemma-3-27b-it",
+        contents=player1_prompt,
+    )
+
+    # TODO: fix players speech, they have to act as the players
+    player1_text = player1_response.text
+    print(player1_text)
+
+    # Done: put player speak here
+    await player_speak(1, player1_text)
+
+    # TODO: fill here
+    instruction_history = history_maker(user_input, player1_text) 
+
+    history_saver_one_response = gemma_client.models.generate_content(
+        model="gemma-3-27b-it",
+        contents=instruction_history,
+    )
+
+    history_saver_one_text = history_saver_one_response.text
+
+    with open("history.txt", 'a') as f:
+        f.write(f"\n{history_saver_one_text}")
+
+        player2_prompt = f"""{player2} 
+        Descrição dos eventos ocorridos:
+        {history_saver_one_text}"""
+
+        player2_response = gemma_client.models.generate_content(
+            model="gemma-3-27b-it",
+            contents=player2_prompt + "É sua vez de agir agora, o turno é seu.",
+        )
+
+        history = ""
+        # TODO: is this necessary since we have line 152?
+        with open("history.txt", 'r') as f:
+             for line in f:
+                  history += f.readline()
+
+        player2_text = player2_response.text
+
+        # TODO: AI player 2 
+        await player_speak(2, player2_text)
+
+        instruction = history_maker(user_input, player1_text, player2_text, history=history)
+
+        final_definitive_history_file_response = gemma_client.models.generate_content(
+            model="gemma-3-27b-it",
+            contents=instruction,
+        )
+
+        final_definitive_history_file_text = final_definitive_history_file_response.text
+        print(final_definitive_history_file_text)
+
+        os.remove("history.txt")
+
+        with open("history.txt", 'w') as f:
+            f.write(f"\n{final_definitive_history_file_text}")
+
+
+def register_to_history():
+    pass
 
 if __name__ == '__main__':
     asyncio.run(main())
