@@ -26,12 +26,14 @@ GEMMA_API_KEY = os.getenv("GEMMA_API_KEY")
 MURF_API_KEY = os.getenv("MURF_API_KEY")
 
 # Data related
-history_path = Path.cwd().resolve() / "history.txt"
-
+how_to_play_and_plot_explanation_path = Path.cwd().resolve() / "data" / "how_to_play_and_plot_explanation.txt"
+history_path = Path.cwd().resolve() / "data" / "history.txt"
+characters_path = Path.cwd().resolve() / "characters" 
 
 # The client gets the API key from the environment variable `GEMMA_API_KEY`.
 gemma_client = genai.Client(api_key=GEMMA_API_KEY)
 murf_client = Murf(api_key=MURF_API_KEY)
+
 
 class Player():
     def __init__(self, prompt):
@@ -41,17 +43,25 @@ class Player():
 player1 = Player("")
 player2 = Player("")
 
+
 player_map = {
     1: player1,
     2: player2,
 }
 
+how_to_play_and_plot_explanation = None
 
-with open("player1.txt", 'r') as f:
-    player1 = f.read()
+with open(how_to_play_and_plot_explanation_path, 'r') as f:
+    how_to_play_and_plot_explanation = f.read()
 
-with open("player2.txt", 'r') as f:
-    player2 = f.read()
+with open(characters_path / "player1.txt", 'r') as f:
+    info = f.read()
+    player_map[1].prompt = how_to_play_and_plot_explanation + "\n\n" + info
+
+with open(characters_path / "player2.txt", 'r') as f:
+    info = f.read()
+    player_map[2].prompt = how_to_play_and_plot_explanation + "\n\n" + info
+
 
 def history_maker(master_narration, player1_actions, player2_actions : str = "", history : str = ""):
 
@@ -125,23 +135,34 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
 
 async def main():
 
+
     if not len(sys.argv) == 3:
-        print("Usage: python main.py <./path/to/player1.txt> <./path/to/player2.txt>")
+        print("Usage: python main.py <player1.txt> <player2.txt>")
 
-    player1 = sys.argv[1]
-    player2 = sys.argv[2]
-
+    player1_path = characters_path / sys.argv[1]
+    player2_path = characters_path / sys.argv[2]
     if not os.path.exists(history_path):
         print("Não há nenhum arquivo de histórico, criando um.")
 
-        with open("history.txt", "w") as fw:
+        with open("data/history.txt", "w") as fw:
                 pass
 
     # DONE: fix problem: the AI players doesn't know who is who so they two think they are the player one.
     while True:
+ 
+        history = ""
+
+        with open("data/history.txt", 'r') as f:
+             history = f.read()
 
         # master's turn
-        user_input = input("Diga o que ocorre: ")
+        master_text = input("Diga o que ocorre: ")
+
+        # first player's turn
+        player_turn(master_text, player_id=1)
+        
+        # second player's turn
+        player_turn(master_text, player_id=2)
 
 
 async def player_speak(player_id : int, message : str):
@@ -169,10 +190,17 @@ async def player_speak(player_id : int, message : str):
         return
 
 
-async def player_complete_action(player_id, player_prompt : str, history : str):
+async def player_complete_action(player_id : int, history : str, master_text : str):
         player_prompt = f"""{player_map[player_id].prompt} 
-        Descrição dos eventos ocorridos:
+
+
+        ### Descrição dos eventos ocorridos anteriormente ###
         {history}
+
+        
+        ### O que o mestre narrou mais recentemente ###
+
+        Fala do mestre: {master_text}
 
         ### O que fazer ###
      
@@ -205,7 +233,7 @@ async def player_turn(master_text, player_id : int):
             history += f.readline()
 
     # Player's turn
-    player_text = await player_complete_action(player_id, player_map[player_id].prompt, history)
+    player_text = await player_complete_action(player_id, history, master_text)
     
     history = history_maker(master_text, player_text) 
 
