@@ -144,7 +144,7 @@ async def main():
         user_input = input("Diga o que ocorre: ")
 
 
-async def player_speak(player : int, message : str):
+async def player_speak(player_id : int, message : str):
 
         voice_hashmap = {
             1: "Silvio",
@@ -153,7 +153,7 @@ async def player_speak(player : int, message : str):
 
         audio_res = murf_client.text_to_speech.generate(
         text=message,
-        voice_id=voice_hashmap[player]
+        voice_id=voice_hashmap[player_id]
         )
 
         duration_in_seconds = audio_res.audio_length_in_seconds
@@ -162,28 +162,23 @@ async def player_speak(player : int, message : str):
 
         request = requests.get(audio_res.audio_file)
 
-        with open(f"file{player}.wav", 'wb') as f:
+        with open(f"file{player_id}.wav", 'wb') as f:
             f.write(request.content)
 
         run(split('cvlc file.wav'))
         return
 
-async def player_turn(master_text, player : int):
 
-    # It's assumed there will be always an .txt file named history.txt
-    history = "" 
-
-    with open("history.txt", 'r') as f:
-        for line in f:
-            print(line)
-            history += f.readline()
-
-    # Player's turn
-    await player_complete_action
-    async def player_complete_action(player_prompt : str, history : str):
-        player_prompt = f"""{player_map[player]} 
+async def player_complete_action(player_id, player_prompt : str, history : str):
+        player_prompt = f"""{player_map[player_id].prompt} 
         Descrição dos eventos ocorridos:
-        {history}"""
+        {history}
+
+        ### O que fazer ###
+     
+        É sua vez de agir agora, o turno é seu.
+        
+        """
 
         player_response = gemma_client.models.generate_content(
             model="gemma-3-27b-it",
@@ -194,55 +189,37 @@ async def player_turn(master_text, player : int):
         print(player_text)
 
         # Done: put player speak here
-        await player_speak(player, player_text)
+        await player_speak(player_id, player_text)
 
-    # TODO: fill here
-    instruction_history = history_maker(user_input, player1_text) 
+        return player_text
 
-    history_saver_one_response = gemma_client.models.generate_content(
+
+async def player_turn(master_text, player_id : int):
+
+    # It's assumed there will be always a .txt file named history.txt
+    history = "" 
+
+    with open("history.txt", 'r') as f:
+        for line in f:
+            print(line)
+            history += f.readline()
+
+    # Player's turn
+    player_text = await player_complete_action(player_id, player_map[player_id].prompt, history)
+    
+    history = history_maker(master_text, player_text) 
+
+    new_registry_response = gemma_client.models.generate_content(
         model="gemma-3-27b-it",
-        contents=instruction_history,
+        contents=history,
     )
 
-    history_saver_one_text = history_saver_one_response.text
+    new_registry_text = new_registry_response.text
 
-    with open("history.txt", 'a') as f:
-        f.write(f"\n{history_saver_one_text}")
+    os.remove(history.txt)
 
-        player2_prompt = f"""{player2} 
-        Descrição dos eventos ocorridos:
-        {history_saver_one_text}"""
-
-        player2_response = gemma_client.models.generate_content(
-            model="gemma-3-27b-it",
-            contents=player2_prompt + "É sua vez de agir agora, o turno é seu.",
-        )
-
-        history = ""
-        # TODO: is this necessary since we have line 152?
-        with open("history.txt", 'r') as f:
-             for line in f:
-                  history += f.readline()
-
-        player2_text = player2_response.text
-
-        # TODO: AI player 2 
-        await player_speak(2, player2_text)
-
-        instruction = history_maker(user_input, player1_text, player2_text, history=history)
-
-        final_definitive_history_file_response = gemma_client.models.generate_content(
-            model="gemma-3-27b-it",
-            contents=instruction,
-        )
-
-        final_definitive_history_file_text = final_definitive_history_file_response.text
-        print(final_definitive_history_file_text)
-
-        os.remove("history.txt")
-
-        with open("history.txt", 'w') as f:
-            f.write(f"\n{final_definitive_history_file_text}")
+    with open("history.txt", 'w') as f:
+        f.write(f"\n{new_registry_text}")
 
 
 def register_to_history():
