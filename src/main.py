@@ -16,6 +16,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+from pyfiglet import Figlet
+
 import sys
 
 env_path = Path.cwd().parent.resolve() / ".env"
@@ -24,6 +26,9 @@ load_dotenv(dotenv_path=env_path)
 
 GEMMA_API_KEY = os.getenv("GEMMA_API_KEY")
 MURF_API_KEY = os.getenv("MURF_API_KEY")
+
+# font
+font = Figlet(font='standard')
 
 
 # Data related
@@ -80,7 +85,8 @@ introduce_game_prompt = f"""
 
     Você é um contador de histórias.
 
-    Deve simplificar ao máximo os dados fornecidos em até no máximo 2 frases,
+    Simplifique os dados fornecidos, escrevendo em até 5 palavras para cada campo,
+    de acordo com os dados que foram fornecidos.
 
     o mais importante é que deve fornecer a iniciativa dos dois personagens.
 
@@ -178,6 +184,10 @@ def history_maker(master_narration, player1_actions, player2_actions : str = "",
 
 async def main():
 
+    clear_screen()
+
+    print(font.renderText("Trama"))
+
     if not os.path.exists(history_path):
         print("Não há nenhum arquivo de histórico, criando um.")
 
@@ -192,7 +202,9 @@ async def main():
 
     summary = gemma_client.models.generate_content(model="gemma-3-27b-it", contents=introduce_game_prompt).text
 
-    print(plot)
+    print("########################################################")
+
+    print(plot, end="\n\n")
     print(summary)
 
     # DONE: fix problem: the AI players doesn't know who is who so they two think they are the player one.
@@ -207,10 +219,10 @@ async def main():
         master_text = input("Diga o que ocorre: ")
 
         # first player's turn
-        player_turn(master_text, player_id=1)
+        await player_turn(master_text, player_id=1)
         
         # second player's turn
-        player_turn(master_text, player_id=2)
+        await player_turn(master_text, player_id=2)
 
 
 async def player_speak(player_id : int, message : str):
@@ -309,6 +321,9 @@ def initial_setup():
     if not os.path.exists(data_path):
         os.mkdir(data_path)
 
+
+def clear_screen():
+     os.system('cls' if os.name == 'nt' else 'clear')
 
 if __name__ == '__main__':
     initial_setup()
