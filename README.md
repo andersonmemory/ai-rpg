@@ -4,7 +4,7 @@
 
 
 <div align="center">
-    <img src=https://img.shields.io/badge/%E2%9A%A0%EF%B8%8F_In_develpoment_process-orange?style=flat>
+    <img src=https://img.shields.io/badge/%E2%9A%A0%EF%B8%8F_In_development_process-orange?style=flat>
 
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?labelColor=003694&color=ffffff" alt="License">
 
