@@ -97,3 +97,16 @@ Run this following line in your terminal and use the values you got. Describe yo
 
 Just tell the character's filename (without specifying the path), it defaults to ``src/characters`` for example ``john_doe.txt`` and now you just need to describe what happened.
 
+## ❓ Why this project does exist?
+
+The rise of AI in TTRPGs, popularized by creators like DougDoug, showed me how incredible these experiences could be.
+
+However, existing AI tools presented three major obstacles for me:
+
+- They require high-end, powerful computers (and I don't have a good one).
+
+- They rely on expensive paid APIs (and I don't want to pay for them).
+
+- I wanted my own custom experience based on the easy-to-manage Dominus System.
+
+That's why I created AI-RPG for Dominus. My goal was to build a **cost-effective, lightweight, and custom solution** to bring the power of AI-driven role-playing to myself—and now to anyone else who faces the same challenges!
