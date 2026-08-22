@@ -2,3 +2,4 @@
 characters/
 data/
 temp_audios/
+__pycache__/
