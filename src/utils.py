@@ -16,9 +16,6 @@ def read(input):
     interaction = client.interactions.create(
         model="gemma-4-26b-a4b-it", input=f"{custom_instructions} {input}"
     )
-    # clean_text = re.sub(clean_pattern, "", interaction.output_text, flags=re.M)
-    # print(clean_text)
-    # return clean_text
     print(interaction.output_text)
     return interaction.output_text
 
@@ -35,10 +32,8 @@ def read_stream(input):
     for event in stream:
         if event.event_type == "step.delta":
             if event.delta.type == "text":
-                # clean_text = re.sub(clean_pattern, "", event.delta.text, flags=re.M)
                 print(event.delta.text, end="", flush=True)
                 output_text.append(event.delta.text)
-                # output_text.append(clean_text)
 
     print()
     return "".join(output_text)
