@@ -1,39 +1,71 @@
 import os
 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 custom_instructions = """
     - Answer in plain text, in a continuous line, pure text. Natural way.
+    - Few sentences, this is a game.
+    - You're receiving the narration from a DM, and you are the player.
+    - You have to decide as if you are the character.
 """
 
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
 
 
 def read(input):
 
-    interaction = client.interactions.create(
-        model="gemma-4-26b-a4b-it", input=f"{custom_instructions} {input}"
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"{custom_instructions} {input}",
+            }
+        ],
+        model="qwen/qwen3.6-27b",
+        reasoning_format="hidden",
     )
-    print(interaction.output_text)
-    return interaction.output_text
+
+    print(chat_completion.choices[0].message.content)
+    return chat_completion.choices[0].message.content
 
 
 def read_stream(input):
 
     output_text = []
-
-    stream = client.interactions.create(
-        model="gemma-4-26b-a4b-it",
-        input=f"{custom_instructions} {input}",
+    stream = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"{custom_instructions} {input}",
+            }
+        ],
+        model="qwen/qwen3.6-27b",
         stream=True,
+        reasoning_format="hidden",
     )
-    for event in stream:
-        if event.event_type == "step.delta":
-            if event.delta.type == "text":
-                print(event.delta.text, end="", flush=True)
-                output_text.append(event.delta.text)
+
+    for chunk in stream:
+        text = chunk.choices[0].delta.content
+        if text:
+            print(text, end="", flush=True)
+            output_text.append(text)
 
     print()
     return "".join(output_text)
+
+
+#
+# check_inventory_function = {
+#     "type": "function",
+#     "name": "check_inventory",
+#     "description": "shows all items you currently have in your inventory",
+# }
+#
+#
+# def check_inventory():
+#     return """Você possui uma roupa de guarda, e as chaves que tinha roubado de um deles para a cela."""

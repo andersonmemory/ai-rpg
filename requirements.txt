@@ -1,4 +1,4 @@
-google-genai==2.19.0
 pyfiglet==1.0.4
+groq==1.6.0
 python-dotenv==1.2.3
 termcolor==3.3.0
