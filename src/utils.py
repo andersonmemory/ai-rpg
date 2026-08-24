@@ -24,8 +24,6 @@ client = Groq(
 
 
 # TODO: have your own tools.py file for modularity with some .json loading
-# TODO: executes tool call and prints the content once it's finished
-# TODO: executes tool call and streams the content
 def read_stream_call(input):
     # initialize message
     messages = [
