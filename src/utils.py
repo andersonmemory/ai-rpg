@@ -59,6 +59,7 @@ def read_stream(input):
     return "".join(output_text)
 
 
+# TODO: have your own tools.py file for modularity with some .json loading
 # TODO: executes tool call and prints the content once it's finished
 def read_stream_call():
     # TODO: initialize message
