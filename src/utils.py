@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from groq import Groq
+import random
 
 custom_instructions = """
     - Answer in plain text, in a continuous line, pure text. Natural way.
@@ -75,19 +76,25 @@ def read_stream_call(input):
         {"role": "system", "content": custom_instructions},
         {"role": "user", "content": input},
     ]
-    # TODO: tool schema
+
     # return printed chunks with flush enabled
     # return list containing all chunks together
     pass
 
 
-#
-# check_inventory_function = {
-#     "type": "function",
-#     "name": "check_inventory",
-#     "description": "shows all items you currently have in your inventory",
-# }
-#
-#
-# def check_inventory():
-#     return """Você possui uma roupa de guarda, e as chaves que tinha roubado de um deles para a cela."""
+# Tool map:
+available_functions = {"roll_d6": roll_d6}
+
+# Tool definitions:
+roll_d6 = {
+    "type": "function",
+    "function": {
+        "name": "roll_d6",
+        "description": "rolls a d6 dice, only use if it is asked to perform a test",
+    },
+}
+
+
+# Function definition:
+def roll_d6():
+    return random.randint(1, 6)
