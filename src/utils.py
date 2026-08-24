@@ -59,6 +59,23 @@ def read_stream(input):
     return "".join(output_text)
 
 
+# TODO: executes tool call and prints the content once it's finished
+def read_stream_call():
+    # TODO: initialize message
+    # TODO: tool schema
+    # returns the final content
+    pass
+
+
+# TODO: executes tool call and streams the content
+def read_stream_call():
+    # TODO: initialize message
+    # TODO: tool schema
+    # return printed chunks with flush enabled
+    # return list containing all chunks together
+    pass
+
+
 #
 # check_inventory_function = {
 #     "type": "function",
