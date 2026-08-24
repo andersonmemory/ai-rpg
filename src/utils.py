@@ -69,8 +69,12 @@ def read_stream_call():
 
 
 # TODO: executes tool call and streams the content
-def read_stream_call():
-    # TODO: initialize message
+def read_stream_call(input):
+    # initialize message
+    messages = [
+        {"role": "system", "content": custom_instructions},
+        {"role": "user", "content": input},
+    ]
     # TODO: tool schema
     # return printed chunks with flush enabled
     # return list containing all chunks together
