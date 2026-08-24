@@ -47,7 +47,12 @@ def read_stream_call(input):
     )
 
     stream = client.chat.completions.create(
-        messages=messages, model=MODEL, tools=[roll], tool_choice="auto", stream=True
+        messages=messages,
+        model=MODEL,
+        tools=[roll],
+        tool_choice="auto",
+        stream=True,
+        reasoning_format="hidden",
     )
 
     # initialize variables
@@ -83,9 +88,7 @@ def read_stream_call(input):
         messages.extend(execute_tools(tool_calls))
 
         stream_call = client.chat.completions.create(
-            messages=messages,
-            model=MODEL,
-            stream=True,
+            messages=messages, model=MODEL, stream=True, reasoning_format="hidden"
         )
 
         final_output = []
