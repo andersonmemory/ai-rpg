@@ -1,4 +1,6 @@
 import os
+
+from httpx._transports import default
 from utils import *
 import random
 
@@ -46,11 +48,15 @@ def say(player: Player):
 
 def main():
 
+    autonomous_loop = True
+
     agent_A = Player("Jorge", instructions_A)
     agent_B = Player("Beto", instructions_B)
     agent_C = Player("Clara", instructions_C)
 
     players.extend([agent_A, agent_B, agent_C])
+
+    identifiers = {"1": agent_A, "2": agent_B, "3": agent_C}
 
     dm(
         "DM: Vocês três estão em 1982, numa prisão, Jorge, Beto e Clara. Na sua frente uma pequena serra caseira, na sua esquerda a porta da cela, e na sua direita uma janela com grades de ferro, o que você faz?"
@@ -70,9 +76,34 @@ def main():
     # agent_C.answer(f"")
 
     while True:
-        dm(input("\nDM: "))
+        dm_answer = input("\nDM: ")
 
-        # ai = vanderlei.answer(dm)
+        match dm_answer:
+            case "d6":
+                print(d6())
+                continue
+            case "2d6":
+                print([d6(), d6()])
+                continue
+
+        if dm_answer in ["1", "2", "3"]:
+            autonomous_loop = False
+            dm(input(f"Dizer para {identifiers[dm_answer].name}: "))
+            say(identifiers[dm_answer])
+            continue
+
+        if autonomous_loop:
+            if dm_answer != "":
+                dm(dm_answer)
+
+            random.shuffle(players)
+
+            for player in players:
+                say(player)
+
+
+def d6():
+    return random.randint(1, 6)
 
 
 if __name__ == "__main__":
