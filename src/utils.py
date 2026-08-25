@@ -21,11 +21,12 @@ class Player:
 
     def __init__(self, name, instructions):
         self.name = name
-        self.instruction = instructions
-        self.messages = [{"role": "system", "content": instructions}]
+        self.instruction = [{"role": "system", "content": instructions}]
 
     def answer(self):
         output = []
+
+        messages.insert(0, self.instruction)
 
         stream = client.chat.completions.create(
             messages=self.messages,
@@ -46,6 +47,7 @@ class Player:
                 finish_reason = chunk.choices[0].finish_reason
 
         output = "".join(output)
+        messages.pop(0)
 
         if output:
             print()
