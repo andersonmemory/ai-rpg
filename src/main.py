@@ -30,10 +30,6 @@ def dm(content: str):
 
     messages.append({"role": "user", "content": f"[DM]: {content}"})
 
-    # for player in players:
-    #     player.add_to_memory({"role": "user", "content": content})
-    #
-
 
 def say(player: Player):
 
@@ -42,14 +38,6 @@ def say(player: Player):
 
     messages.append({"role": "user", "content": f"[{name}]: {content}")
 
-    # for player in players:
-    #     if player.name == name:
-    #         continue
-    #
-    #     player.add_to_memory(
-    #         {"role": "user", "content": f"{name} disse/decidiu fazer: {content}"}
-    #     )
-    #
 
 
 def main():
