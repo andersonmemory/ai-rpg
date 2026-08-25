@@ -49,7 +49,7 @@ class Player:
 
         if output:
             print()
-            self.messages.append(
+            messages.append(
                 {"role": "user", "content": f"[{self.name}]: {''.join(output)}"}
             )
             return "".join(output)
