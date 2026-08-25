@@ -5,12 +5,15 @@ from dotenv import load_dotenv
 from groq import Groq
 import random
 
-MODEL = "qwen/qwen3.6-27b"
+MODEL = "openai/gpt-oss-20b"
+# MODEL = "qwen/qwen3.6-27b"
 
 load_dotenv()
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
 )
+
+messages = []
 
 
 class Player:
@@ -24,16 +27,8 @@ class Player:
     def add_to_memory(self, message):
         self.messages.append(message)
 
-    def answer(self, input=""):
+    def answer(self):
         output = []
-
-        if input:
-            self.messages.append(
-                {
-                    "role": "user",
-                    "content": f" {input}",
-                }
-            )
 
         stream = client.chat.completions.create(
             messages=self.messages,
@@ -57,16 +52,10 @@ class Player:
 
         if output:
             print()
-            self.messages.append({"role": "assistant", "content": "".join(output)})
+            self.messages.append(
+                {"role": "user", "content": f"[{self.name}]: {''.join(output)}"}
+            )
             return "".join(output)
         else:
             print(f"ERROR: No content generated. Finish_reason: {finish_reason}")
             return
-
-
-custom_instructions = """
-    - Answer in plain text, brazilian portuguese, in a continuous line, pure text. Natural way.
-    - Few sentences, this is a game.
-    - You're receiving the narration from a DM, and you are the player.
-    - You have to decide as if you are the character.
-"""
