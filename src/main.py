@@ -57,15 +57,6 @@ def main():
     for player in players:
         say(player)
 
-    # print("==============")
-    # print(agent_A.messages)
-    # print("==============")
-    # print(agent_B.messages)
-    # print("==============")
-    # print(agent_C.messages)
-    # print("==============")
-    #
-    # agent_C.answer(f"")
 
     while True:
         dm_answer = input("\nDM: ")
