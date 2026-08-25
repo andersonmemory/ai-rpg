@@ -36,8 +36,7 @@ def say(player: Player):
     name = player.name
     content = player.answer()
 
-    messages.append({"role": "user", "content": f"[{name}]: {content}")
-
+    messages.append({"role": "user", "content": f"[{name}]: {content}"})
 
 
 def main():
@@ -57,6 +56,7 @@ def main():
     for player in players:
         say(player)
 
+    print(messages)
 
     while True:
         dm_answer = input("\nDM: ")
