@@ -28,8 +28,11 @@ players = []
 
 def dm(content: str):
 
-    for player in players:
-        player.add_to_memory({"role": "user", "content": content})
+    messages.append({"role": "user", "content": f"[DM]: {content}"})
+
+    # for player in players:
+    #     player.add_to_memory({"role": "user", "content": content})
+    #
 
 
 def say(player: Player):
@@ -37,18 +40,19 @@ def say(player: Player):
     name = player.name
     content = player.answer()
 
-    for player in players:
-        if player.name == name:
-            continue
+    messages.append({"role": "user", "content": f"[{name}]: {content}")
 
-        player.add_to_memory(
-            {"role": "user", "content": f"{name} disse/decidiu fazer: {content}"}
-        )
+    # for player in players:
+    #     if player.name == name:
+    #         continue
+    #
+    #     player.add_to_memory(
+    #         {"role": "user", "content": f"{name} disse/decidiu fazer: {content}"}
+    #     )
+    #
 
 
 def main():
-
-    autonomous_loop = True
 
     agent_A = Player("Jorge", instructions_A)
     agent_B = Player("Beto", instructions_B)
@@ -87,19 +91,17 @@ def main():
                 continue
 
         if dm_answer in ["1", "2", "3"]:
-            autonomous_loop = False
             dm(input(f"Dizer para {identifiers[dm_answer].name}: "))
             say(identifiers[dm_answer])
             continue
 
-        if autonomous_loop:
-            if dm_answer != "":
-                dm(dm_answer)
+        if dm_answer != "":
+            dm(dm_answer)
 
-            random.shuffle(players)
+        random.shuffle(players)
 
-            for player in players:
-                say(player)
+        for player in players:
+            say(player)
 
 
 def d6():
