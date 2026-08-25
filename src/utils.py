@@ -5,7 +5,9 @@ from dotenv import load_dotenv
 from groq import Groq
 import random
 
-MODEL = "openai/gpt-oss-20b"
+
+MODEL = "openai/gpt-oss-120b"
+# MODEL = "openai/gpt-oss-20b"
 # MODEL = "qwen/qwen3.6-27b"
 
 load_dotenv()
@@ -33,7 +35,6 @@ class Player:
             model=MODEL,
             stream=True,
             reasoning_format="hidden",
-            max_tokens=5000,
         )
 
         finish_reason = None
