@@ -80,11 +80,12 @@ def main():
 
         if dm_answer in ["1", "2", "3"]:
             dm(input(f"Dizer para {identifiers[dm_answer].name}: "))
-            say(identifiers[dm_answer])
+            answer = f"[DM]: {dm_answer}"
+            say(identifiers[answer])
             continue
 
         if dm_answer != "":
-            dm(dm_answer)
+            dm(f"[DM]: {dm_answer}")
 
         random.shuffle(players)
 
