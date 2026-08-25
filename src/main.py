@@ -36,8 +36,6 @@ def say(player: Player):
     name = player.name
     content = player.answer()
 
-    messages.append({"role": "user", "content": f"[{name}]: {content}"})
-
 
 def main():
 

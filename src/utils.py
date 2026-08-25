@@ -29,7 +29,7 @@ class Player:
         messages.insert(0, self.instruction)
 
         stream = client.chat.completions.create(
-            messages=self.messages,
+            messages=messages,
             model=MODEL,
             stream=True,
             reasoning_format="hidden",
