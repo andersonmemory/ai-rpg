@@ -24,9 +24,6 @@ class Player:
         self.instruction = instructions
         self.messages = [{"role": "system", "content": instructions}]
 
-    def add_to_memory(self, message):
-        self.messages.append(message)
-
     def answer(self):
         output = []
 
