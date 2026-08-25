@@ -21,12 +21,13 @@ class Player:
 
     def __init__(self, name, instructions):
         self.name = name
-        self.instruction = [{"role": "system", "content": instructions}]
+        self.instruction = {"role": "system", "content": instructions}
 
     def answer(self):
         output = []
 
         messages.insert(0, self.instruction)
+        print(messages)
 
         stream = client.chat.completions.create(
             messages=messages,
