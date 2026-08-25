@@ -27,7 +27,6 @@ class Player:
         output = []
 
         messages.insert(0, self.instruction)
-        print(messages)
 
         stream = client.chat.completions.create(
             messages=messages,
