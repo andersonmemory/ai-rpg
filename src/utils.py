@@ -36,9 +36,7 @@ class Player:
         global_messages.insert(0, {"role": "user", "content": self.instruction})
 
         stream = client.chat.completions.create(
-            messages=global_messages,
-            model=MODEL,
-            stream=True,
+            messages=global_messages, model=MODEL, stream=True
         )
 
         finish_reason = None
@@ -48,19 +46,22 @@ class Player:
 
         for chunk in stream:
             if chunk.choices[0].delta.content:
-                if "<thought>" in chunk.choices[0].delta.content:
+                content = chunk.choices[0].delta.content
+
+                if "<thought>" in content or "<think>" in content:
                     think = True
-                elif "</thought>" in chunk.choices[0].delta.content:
+                elif "</thought>" in content or "</think>" in content:
                     think = False
+
                 if not think and not removed_thought:
                     if "</thought>" in chunk.choices[0].delta.content:
                         value = chunk.choices[0].delta.content.replace("</thought>", "")
                         output.append(value)
                         print(value, end="", flush=True)
                         removed_thought = True
-                elif not think:
-                    output.append(chunk.choices[0].delta.content)
-                    print(chunk.choices[0].delta.content, end="", flush=True)
+                    else:
+                        output.append(chunk.choices[0].delta.content)
+                        print(chunk.choices[0].delta.content, end="", flush=True)
 
             if chunk.choices[0].finish_reason != None:
                 finish_reason = chunk.choices[0].finish_reason
