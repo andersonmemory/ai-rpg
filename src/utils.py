@@ -33,7 +33,7 @@ class Player:
     def answer(self):
         output = []
 
-        global_messages.insert(0, {"role": "user", "content": self.instruction})
+        global_messages.insert(0, {"role": "system", "content": self.instruction})
 
         stream = client.chat.completions.create(
             messages=global_messages, model=MODEL, stream=True, tool_choice="none"
