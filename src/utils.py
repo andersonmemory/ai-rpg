@@ -42,12 +42,26 @@ class Player:
         )
 
         finish_reason = None
+        think = False
+        removed_thought = False
         print(f"{self.name}: ", end="", flush=True)
 
         for chunk in stream:
             if chunk.choices[0].delta.content:
-                output.append(chunk.choices[0].delta.content)
-                print(chunk.choices[0].delta.content, end="", flush=True)
+                if "<thought>" in chunk.choices[0].delta.content:
+                    think = True
+                elif "</thought>" in chunk.choices[0].delta.content:
+                    think = False
+                if not think and not removed_thought:
+                    if "</thought>" in chunk.choices[0].delta.content:
+                        value = chunk.choices[0].delta.content.replace("</thought>", "")
+                        output.append(value)
+                        print(value, end="", flush=True)
+                        removed_thought = True
+                elif not think:
+                    output.append(chunk.choices[0].delta.content)
+                    print(chunk.choices[0].delta.content, end="", flush=True)
+
             if chunk.choices[0].finish_reason != None:
                 finish_reason = chunk.choices[0].finish_reason
 
@@ -77,9 +91,7 @@ def summarize():
         {"role": "user", "content": f"{global_history} ### {global_messages}"},
     ]
 
-    response = client.chat.completions.create(
-        messages=messages, model=MODEL_SUMMARIZER
-    )
+    response = client.chat.completions.create(messages=messages, model=MODEL_SUMMARIZER)
 
     global_history = response.choices[0].message.content
 
