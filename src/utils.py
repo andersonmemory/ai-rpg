@@ -66,6 +66,7 @@ class Player:
             if chunk.choices[0].finish_reason is not None:
                 finish_reason = chunk.choices[0].finish_reason
 
+        print()
         output = "".join(output)
         global_messages.pop(0)
 
