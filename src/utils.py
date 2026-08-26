@@ -59,7 +59,7 @@ class Player:
                         in_block = False
                         content = content.split(close_tag)[-1]
 
-                if content and not in_block:
+                if content and not in_block and content.strip():
                     output.append(content)
                     print(content, end="", flush=True)
 
@@ -70,7 +70,6 @@ class Player:
         global_messages.pop(0)
 
         if output:
-            print()
             global_messages.append(
                 {"role": "user", "content": f"[{self.name}]: {output}"}
             )
