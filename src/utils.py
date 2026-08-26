@@ -40,30 +40,26 @@ class Player:
         )
 
         finish_reason = None
-        think = False
-        removed_thought = False
+        in_thought = False
         print(f"{self.name}: ", end="", flush=True)
 
         for chunk in stream:
-            if chunk.choices[0].delta.content:
-                content = chunk.choices[0].delta.content
+            content = chunk.choices[0].delta.content
 
-                if "<thought>" in content or "<think>" in content:
-                    think = True
-                elif "</thought>" in content or "</think>" in content:
-                    think = False
+            if content:
+                for open_tag, close_tag in [("<think>", "</think>"), ("<thought>", "</thought>")]:
+                    if open_tag in content:
+                        in_thought = True
+                        content = content.split(open_tag)[0]
+                    if close_tag in content:
+                        in_thought = False
+                        content = content.split(close_tag)[-1]
 
-                if not think and not removed_thought:
-                    if "</thought>" in chunk.choices[0].delta.content:
-                        value = chunk.choices[0].delta.content.replace("</thought>", "")
-                        output.append(value)
-                        print(value, end="", flush=True)
-                        removed_thought = True
-                    else:
-                        output.append(chunk.choices[0].delta.content)
-                        print(chunk.choices[0].delta.content, end="", flush=True)
+                if content and not in_thought:
+                    output.append(content)
+                    print(content, end="", flush=True)
 
-            if chunk.choices[0].finish_reason != None:
+            if chunk.choices[0].finish_reason is not None:
                 finish_reason = chunk.choices[0].finish_reason
 
         output = "".join(output)
@@ -72,9 +68,9 @@ class Player:
         if output:
             print()
             global_messages.append(
-                {"role": "user", "content": f"[{self.name}]: {''.join(output)}"}
+                {"role": "user", "content": f"[{self.name}]: {output}"}
             )
-            return "".join(output)
+            return output
         else:
             print(f"ERROR: No content generated. Finish_reason: {finish_reason}")
             return
