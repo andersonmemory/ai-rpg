@@ -2,19 +2,21 @@ import os
 
 import json
 from dotenv import load_dotenv
-from groq import Groq
-import random
+from openai import OpenAI
 
 
-MODEL = "openai/gpt-oss-120b"
-MODEL_SUMMARIZER = "openai/gpt-oss-20b"
-# MODEL = "qwen/qwen3.6-27b"
+MODEL = os.environ.get("MODEL", "gpt-4o-mini")
+MODEL_SUMMARIZER = os.environ.get("MODEL_SUMMARIZER", MODEL)
 
 MAX_MESSAGES = 10
 
 load_dotenv()
-client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
+client = OpenAI(
+    api_key=os.environ.get("API_KEY")
+    or os.environ.get("OPENAI_API_KEY")
+    or os.environ.get("GROQ_API_KEY")
+    or os.environ.get("GEMINI_API_KEY"),
+    base_url=os.environ.get("BASE_URL"),
 )
 
 global_messages = []
@@ -37,7 +39,6 @@ class Player:
             messages=global_messages,
             model=MODEL,
             stream=True,
-            reasoning_format="hidden",
         )
 
         finish_reason = None
@@ -77,7 +78,7 @@ def summarize():
     ]
 
     response = client.chat.completions.create(
-        messages=messages, model=MODEL_SUMMARIZER, reasoning_format="hidden"
+        messages=messages, model=MODEL_SUMMARIZER
     )
 
     global_history = response.choices[0].message.content
