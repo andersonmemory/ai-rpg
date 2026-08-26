@@ -28,7 +28,7 @@ players = []
 
 def dm(content: str):
 
-    messages.append({"role": "user", "content": f"[DM]: {content}"})
+    global_messages.append({"role": "user", "content": f"[DM]: {content}"})
 
 
 def say(player: Player):
@@ -55,6 +55,10 @@ def main():
         say(player)
 
     while True:
+        if len(global_messages) >= MAX_MESSAGES:
+            summarize()
+            continue
+
         dm_answer = input("\nDM: ")
 
         match dm_answer:
