@@ -1,8 +1,6 @@
 import os
-
-from httpx._transports import default
-from utils import *
 import random
+from utils import *
 
 
 instructions_A = """

@@ -4,13 +4,13 @@ import json
 from dotenv import load_dotenv
 from openai import OpenAI
 
+load_dotenv()
 
 MODEL = os.environ.get("MODEL", "gpt-4o-mini")
 MODEL_SUMMARIZER = os.environ.get("MODEL_SUMMARIZER", MODEL)
 
 MAX_MESSAGES = 10
 
-load_dotenv()
 client = OpenAI(
     api_key=os.environ.get("API_KEY")
     or os.environ.get("OPENAI_API_KEY")
