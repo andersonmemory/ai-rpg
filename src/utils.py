@@ -68,46 +68,82 @@ class Player:
         self.raw_instructions = raw_instructions
 
     def answer(self):
-        output = []
-
-        global_messages.insert(0, {"role": "system", "content": self.instruction})
-
-        stream = client.chat.completions.create(
-            messages=global_messages, model=MODEL, stream=True, tool_choice="none"
+        system_content = (
+            f"Português do Brasil.\n"
+            f"Você interpreta o personagem {self.name} em uma sessão de RPG de mesa.\n"
+            f"Personalidade e perfil: {self.raw_instructions}\n"
+            f"Diretrizes de resposta:\n"
+            f"- Aja com instinto de sobrevivência humano realista e adapte o tom à gravidade da situação.\n"
+            f"- Responda com exatamente 1 frase em 1ª pessoa (pode ser uma ação, fala direta com outro personagem pelo nome, ou ambos).\n"
+            f"- Nunca use prefixos como [{self.name}]: ou nomes de outros personagens como cabeçalho.\n"
+            f"- Reaja somente ao que está presente na cena descrita pelo DM.\n"
+            f"- Toda a resposta deve estar em uma única linha."
         )
 
-        finish_reason = None
-        in_block = False
+        history_lines = []
+        for msg in global_messages:
+            history_lines.append(msg.get("content", ""))
+
+        user_content = (
+            "### Histórico recente da sessão:\n"
+            + "\n".join(history_lines)
+            + f"\n\nSua vez de agir como {self.name}. Qual é a sua ação ou fala?"
+        )
+
+        call_messages = [
+            {"role": "system", "content": system_content},
+            {"role": "user", "content": user_content},
+        ]
+
         print(f"{self.name}: ", end="", flush=True)
 
-        for chunk in stream:
-            content = chunk.choices[0].delta.content
+        output = []
+        finish_reason = None
+        in_block = False
 
-            if content:
-                for open_tag, close_tag in THINKING_TAGS:
-                    if open_tag in content:
-                        in_block = True
-                        content = content.split(open_tag)[0]
-                    if close_tag in content:
-                        in_block = False
-                        content = content.split(close_tag)[-1]
+        for attempt in range(2):
+            output = []
+            try:
+                stream = client.chat.completions.create(
+                    messages=call_messages,
+                    model=MODEL,
+                    stream=True,
+                    temperature=0.7 if attempt == 0 else 0.9,
+                )
 
-                if content and not in_block:
-                    output.append(content)
-                    print(content, end="", flush=True)
+                for chunk in stream:
+                    content = chunk.choices[0].delta.content
 
-            if chunk.choices[0].finish_reason is not None:
-                finish_reason = chunk.choices[0].finish_reason
+                    if content:
+                        for open_tag, close_tag in THINKING_TAGS:
+                            if open_tag in content:
+                                in_block = True
+                                content = content.split(open_tag)[0]
+                            if close_tag in content:
+                                in_block = False
+                                content = content.split(close_tag)[-1]
+
+                        if content and not in_block:
+                            output.append(content)
+                            print(content, end="", flush=True)
+
+                    if chunk.choices[0].finish_reason is not None:
+                        finish_reason = chunk.choices[0].finish_reason
+
+                res_text = "".join(output).strip()
+                if res_text:
+                    break
+            except Exception:
+                pass
 
         print("\n")
-        output = "".join(output)
-        global_messages.pop(0)
+        final_output = "".join(output).strip()
 
-        if output:
+        if final_output:
             global_messages.append(
-                {"role": "user", "content": f"[{self.name}]: {output}"}
+                {"role": "user", "content": f"[{self.name}]: {final_output}"}
             )
-            return output
+            return final_output
         else:
             print(f"ERROR: No content generated. Finish_reason: {finish_reason}")
             return
@@ -152,11 +188,11 @@ def generate_character(theme: str) -> list:
                 "content": (
                     "Você cria personagens de RPG humanos e críveis. "
                     "Os nomes devem ser nomes comuns realistas, sem apelidos descritivos ou arquetípicos entre aspas (ex: evite 'João \"O Corajoso\" Silva'). "
-                    "As personalidades devem ser nuançadas: um traço dominante existe, mas não é absoluto — uma pessoa engraçada sabe quando parar de brincar, um líder às vezes hesita, um cético pode se surpreender. "
+                    "As personalidades devem ser nuançadas e descritas em uma frase curta em 3ª pessoa com estilo de agir (ex: 'Pragmático e desconfiado, analisa o ambiente antes de tomar decisões e prefere manter distância'). "
                     "Os personagens são seres humanos com instinto de sobrevivência — mesmo os impulsivos não agem de forma suicida. "
                     "O contraste entre personagens aparece no estilo, postura e prioridades, não em comportamentos impossíveis. "
                     "Responda SOMENTE com JSON puro, sem texto adicional, sem markdown, sem explicações. "
-                    "Formato obrigatório: {\"name\": \"<nome>\", \"instructions\": \"<frase curta em português descrevendo a personalidade e como o personagem age em 1ª pessoa>\"}"
+                    "Formato obrigatório: {\"name\": \"<nome>\", \"instructions\": \"<frase curta em português descrevendo perfil e estilo de agir em 3ª pessoa>\"}"
                 ),
             },
             {
