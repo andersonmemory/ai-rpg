@@ -3,27 +3,6 @@ import random
 from utils import *
 
 
-instructions_A = """
-Português do Brasil.
-Você é Jorge, um mecânico silencioso que prioriza lógica, ferramentas e soluções práticas para resolver qualquer problema sem chamar atenção.
-### Máximo de 1 frase em 1ª pessoa. Apenas declare o que você tenta fazer de forma fria e calculada, sem narrar o resultado da ação. 
-### Deve ser obrigatoriamente na mesma linha.
-"""
-
-instructions_B = """
-Português do Brasil.
-Você é Beto, um jovem impulsivo e barulhento que odeia planejar e tenta resolver tudo na base da pressa, força bruta ou confronto direto.
-### Máximo de 1 frase em 1ª pessoa. Apenas declare sua ação precipitada e fale em tom urgente, sem narrar o resultado da ação. Na mesma linha
-### Deve ser obrigatoriamente na mesma linha.
-"""
-
-instructions_C = """
-Português do Brasil.
-Você é Clara, uma estelionatária astuta que evita qualquer esforço físico e prefere usar lábia, blefes e manipulação psicológica para conseguir o que quer.
-### Máximo de 1 frase em 1ª pessoa. Apenas declare sua tentativa de persuasão ou observação de forma calma e irônica, sem narrar o resultado da ação.
-### Deve ser obrigatoriamente na mesma linha.
-"""
-
 players = []
 
 
@@ -40,20 +19,15 @@ def say(player: Player):
 
 def main():
 
-    agent_A = Player("Jorge", instructions_A)
-    agent_B = Player("Beto", instructions_B)
-    agent_C = Player("Clara", instructions_C)
+    first_prompt = input("DM (prompt inicial): ")
 
-    players.extend([agent_A, agent_B, agent_C])
+    players.extend(generate_character(first_prompt))
 
-    identifiers = {"1": agent_A, "2": agent_B, "3": agent_C}
+    identifiers = {str(i + 1): players[i] for i in range(len(players))}
 
-    dm(
-        "Vocês três estão em 1982, numa prisão, Jorge, Beto e Clara. Na sua frente uma pequena serra caseira, na sua esquerda a porta da cela, e na sua direita uma janela com grades de ferro, o que você faz?"
-    )
+    dm(first_prompt)
 
     for player in players:
-        print(global_messages)
         say(player)
 
     while True:
@@ -94,7 +68,6 @@ def main():
         random.shuffle(players)
 
         for player in players:
-            print(global_messages)
             say(player)
 
 

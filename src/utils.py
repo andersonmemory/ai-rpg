@@ -39,8 +39,24 @@ def strip_thinking_tags(text: str) -> str:
             if end == -1:
                 text = text[:start]
             else:
-                text = text[:start] + text[end + len(close_tag):]
+                text = text[:start] + text[end + len(close_tag) :]
     return text.strip()
+
+
+def extract_json(text: str) -> str | None:
+    """Extract the first complete JSON object from text by tracking brace depth."""
+    start = text.find("{")
+    if start == -1:
+        return None
+    depth = 0
+    for i, ch in enumerate(text[start:], start):
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : i + 1]
+    return None
 
 
 class Player:
@@ -120,3 +136,57 @@ def summarize():
     )
 
     return global_history
+
+
+def generate_character(theme: str) -> list:
+    """Generate 3 unique Player objects based on the DM's opening prompt."""
+    created = []
+    max_attempts = 9
+
+    while len(created) < 3 and max_attempts > 0:
+        max_attempts -= 1
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "Você cria personagens de RPG. "
+                    "Responda SOMENTE com JSON puro, sem texto adicional, sem markdown, sem explicações. "
+                    "Formato obrigatório: {\"name\": \"<nome>\", \"instructions\": \"<frase curta em português descrevendo a personalidade e como o personagem age em 1ª pessoa>\"}"
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"Tema: {theme}\n"
+                    f"Personagens já criados (não repita): {[p.name for p in created]}\n"
+                    "Crie um novo personagem único. Responda apenas com o JSON."
+                ),
+            },
+        ]
+
+        response = client.chat.completions.create(
+            messages=messages, model=MODEL_SUMMARIZER
+        )
+
+        raw = response.choices[0].message.content
+
+        try:
+            # Strip thinking tags first, then extract JSON from the clean text
+            clean = strip_thinking_tags(raw)
+            json_str = extract_json(clean)
+            if not json_str:
+                continue
+            data = json.loads(json_str)
+            # Append the response format constraint so agents always reply in 1 sentence
+            instruction = (
+                f"Português do Brasil.\n"
+                f"{data['instructions']}\n"
+                f"### Máximo de 1 frase em 1ª pessoa. Apenas declare a ação sem narrar o resultado da ação.\n"
+                f"### Deve ser obrigatoriamente na mesma linha."
+            )
+            player = Player(data["name"], instruction)
+            created.append(player)
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    return created
