@@ -23,6 +23,26 @@ global_messages = []
 global_history = ""
 
 
+THINKING_TAGS = [
+    ("<think>", "</think>"),
+    ("<thought>", "</thought>"),
+    ("<tool_call>", "</tool_call>"),
+]
+
+
+def strip_thinking_tags(text: str) -> str:
+    """Remove thinking/tool_call blocks from a complete string."""
+    for open_tag, close_tag in THINKING_TAGS:
+        while open_tag in text:
+            start = text.find(open_tag)
+            end = text.find(close_tag, start)
+            if end == -1:
+                text = text[:start]
+            else:
+                text = text[:start] + text[end + len(close_tag):]
+    return text.strip()
+
+
 class Player:
     """Object representing the AI agent"""
 
@@ -47,11 +67,7 @@ class Player:
             content = chunk.choices[0].delta.content
 
             if content:
-                for open_tag, close_tag in [
-                    ("<think>", "</think>"),
-                    ("<thought>", "</thought>"),
-                    ("<tool_call>", "</tool_call>"),
-                ]:
+                for open_tag, close_tag in THINKING_TAGS:
                     if open_tag in content:
                         in_block = True
                         content = content.split(open_tag)[0]
@@ -94,11 +110,11 @@ def summarize():
 
     response = client.chat.completions.create(messages=messages, model=MODEL_SUMMARIZER)
 
-    global_history = response.choices[0].message.content
+    global_history = strip_thinking_tags(response.choices[0].message.content)
 
     global_messages[:] = global_messages[-3:]
     global_messages.insert(
         0, {"role": "user", "content": f"### Contexto da situação: {global_history}"}
     )
 
-    return response.choices[0].message.content
+    return global_history
