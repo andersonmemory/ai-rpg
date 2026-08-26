@@ -151,6 +151,8 @@ def generate_character(theme: str) -> list:
                 "role": "system",
                 "content": (
                     "Você cria personagens de RPG com personalidades únicas e contrastantes entre si. "
+                    "Os personagens são seres humanos realistas com instinto de sobrevivência — mesmo os mais impulsivos ou agressivos não agem de forma suicida. "
+                    "O contraste entre personalidades deve aparecer no estilo de falar, na postura, na abordagem e nas prioridades — não em comportamentos impossíveis ou absurdos. "
                     "Responda SOMENTE com JSON puro, sem texto adicional, sem markdown, sem explicações. "
                     "Formato obrigatório: {\"name\": \"<nome>\", \"instructions\": \"<frase curta em português descrevendo a personalidade e como o personagem age em 1ª pessoa>\"}"
                 ),
@@ -184,6 +186,7 @@ def generate_character(theme: str) -> list:
                 f"Português do Brasil.\n"
                 f"Você é {data['name']}. Responda APENAS como {data['name']}. Nunca responda por outros personagens.\n"
                 f"{data['instructions']}\n"
+                f"### Aja sempre como um ser humano realista com instinto de sobrevivência. Mesmo sendo impulsivo ou agressivo, nunca tome ações obviamente suicidas (como atacar guardas armados a mãos nuas).\n"
                 f"### Máximo de 1 frase em 1ª pessoa. Pode ser uma ação, um diálogo direto com outro personagem pelo nome, ou ambos.\n"
                 f"### Nunca use o formato [Nome]: na sua resposta. Escreva apenas a frase diretamente.\n"
                 f"### Reaja somente ao que está fisicamente presente na cena descrita pelo DM. Se o DM menciona algo em um papel, é apenas informação, não uma presença física.\n"
