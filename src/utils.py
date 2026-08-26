@@ -62,9 +62,10 @@ def extract_json(text: str) -> str | None:
 class Player:
     """Object representing the AI agent"""
 
-    def __init__(self, name, instructions):
+    def __init__(self, name, instructions, raw_instructions=""):
         self.name = name
         self.instruction = instructions
+        self.raw_instructions = raw_instructions
 
     def answer(self):
         output = []
@@ -149,7 +150,7 @@ def generate_character(theme: str) -> list:
             {
                 "role": "system",
                 "content": (
-                    "Você cria personagens de RPG. "
+                    "Você cria personagens de RPG com personalidades únicas e contrastantes entre si. "
                     "Responda SOMENTE com JSON puro, sem texto adicional, sem markdown, sem explicações. "
                     "Formato obrigatório: {\"name\": \"<nome>\", \"instructions\": \"<frase curta em português descrevendo a personalidade e como o personagem age em 1ª pessoa>\"}"
                 ),
@@ -158,7 +159,8 @@ def generate_character(theme: str) -> list:
                 "role": "user",
                 "content": (
                     f"Tema: {theme}\n"
-                    f"Personagens já criados (não repita): {[p.name for p in created]}\n"
+                    f"Personagens já criados (seja CONTRASTANTE com eles em personalidade e estilo de agir): "
+                    f"{[{'nome': p.name, 'personalidade': p.raw_instructions} for p in created]}\n"
                     "Crie um novo personagem único. Responda apenas com o JSON."
                 ),
             },
@@ -182,12 +184,12 @@ def generate_character(theme: str) -> list:
                 f"Português do Brasil.\n"
                 f"Você é {data['name']}. Responda APENAS como {data['name']}. Nunca responda por outros personagens.\n"
                 f"{data['instructions']}\n"
-                f"### Máximo de 1 frase em 1ª pessoa. Apenas declare a ação sem narrar o resultado da ação.\n"
-                f"### Nunca use o formato [Nome]: na sua resposta. Escreva apenas a ação diretamente.\n"
+                f"### Máximo de 1 frase em 1ª pessoa. Pode ser uma ação, um diálogo direto com outro personagem pelo nome, ou ambos.\n"
+                f"### Nunca use o formato [Nome]: na sua resposta. Escreva apenas a frase diretamente.\n"
                 f"### Reaja somente ao que está fisicamente presente na cena descrita pelo DM. Se o DM menciona algo em um papel, é apenas informação, não uma presença física.\n"
                 f"### Deve ser obrigatoriamente na mesma linha."
             )
-            player = Player(data["name"], instruction)
+            player = Player(data["name"], instruction, data["instructions"])
             created.append(player)
         except (json.JSONDecodeError, KeyError):
             continue
