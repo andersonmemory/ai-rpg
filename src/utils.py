@@ -110,7 +110,9 @@ def summarize():
 
     response = client.chat.completions.create(messages=messages, model=MODEL_SUMMARIZER)
 
-    global_history = strip_thinking_tags(response.choices[0].message.content)
+    summary = strip_thinking_tags(response.choices[0].message.content)
+    if summary:
+        global_history = summary
 
     global_messages[:] = global_messages[-3:]
     global_messages.insert(
