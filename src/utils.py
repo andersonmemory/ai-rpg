@@ -40,22 +40,26 @@ class Player:
         )
 
         finish_reason = None
-        in_thought = False
+        in_block = False
         print(f"{self.name}: ", end="", flush=True)
 
         for chunk in stream:
             content = chunk.choices[0].delta.content
 
             if content:
-                for open_tag, close_tag in [("<think>", "</think>"), ("<thought>", "</thought>")]:
+                for open_tag, close_tag in [
+                    ("<think>", "</think>"),
+                    ("<thought>", "</thought>"),
+                    ("<tool_call>", "</tool_call>"),
+                ]:
                     if open_tag in content:
-                        in_thought = True
+                        in_block = True
                         content = content.split(open_tag)[0]
                     if close_tag in content:
-                        in_thought = False
+                        in_block = False
                         content = content.split(close_tag)[-1]
 
-                if content and not in_thought:
+                if content and not in_block:
                     output.append(content)
                     print(content, end="", flush=True)
 
