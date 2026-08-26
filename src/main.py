@@ -57,17 +57,8 @@ def main():
         say(player)
 
     while True:
-        print(len(global_messages), MAX_MESSAGES)
         if len(global_messages) >= MAX_MESSAGES:
-            print("before")
-            print(global_messages)
-            print(global_history)
-            print("###")
             summarize()
-            print("after")
-            print(global_messages)
-            print(global_history)
-            print("###")
             continue
 
         dm_answer = input("\nDM: ")
