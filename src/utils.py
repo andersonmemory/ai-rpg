@@ -91,14 +91,14 @@ class Player:
                         in_block = False
                         content = content.split(close_tag)[-1]
 
-                if content and not in_block and content.strip():
+                if content and not in_block:
                     output.append(content)
                     print(content, end="", flush=True)
 
             if chunk.choices[0].finish_reason is not None:
                 finish_reason = chunk.choices[0].finish_reason
 
-        print()
+        print("\n")
         output = "".join(output)
         global_messages.pop(0)
 
@@ -180,8 +180,11 @@ def generate_character(theme: str) -> list:
             # Append the response format constraint so agents always reply in 1 sentence
             instruction = (
                 f"Português do Brasil.\n"
+                f"Você é {data['name']}. Responda APENAS como {data['name']}. Nunca responda por outros personagens.\n"
                 f"{data['instructions']}\n"
                 f"### Máximo de 1 frase em 1ª pessoa. Apenas declare a ação sem narrar o resultado da ação.\n"
+                f"### Nunca use o formato [Nome]: na sua resposta. Escreva apenas a ação diretamente.\n"
+                f"### Reaja somente ao que está fisicamente presente na cena descrita pelo DM. Se o DM menciona algo em um papel, é apenas informação, não uma presença física.\n"
                 f"### Deve ser obrigatoriamente na mesma linha."
             )
             player = Player(data["name"], instruction)
